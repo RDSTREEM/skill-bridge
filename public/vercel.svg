@@ -1,1 +1,21 @@
-<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+<svg width="300" height="80" viewBox="0 0 300 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Bridge Icon -->
+  <g transform="translate(0,10)">
+    <path d="M20 60 L40 30 L60 60" stroke="url(#gradient)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="20" cy="60" r="3" fill="url(#gradient)"/>
+    <circle cx="60" cy="60" r="3" fill="url(#gradient)"/>
+  </g>
+
+  <!-- Text -->
+  <text x="80" y="55" font-family="Montserrat, sans-serif" font-size="32" font-weight="600" fill="url(#gradient)">
+    SkillBridge
+  </text>
+
+  <!-- Gradient -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4C6EF5"/>
+      <stop offset="100%" stop-color="#9B5DE5"/>
+    </linearGradient>
+  </defs>
+</svg>
