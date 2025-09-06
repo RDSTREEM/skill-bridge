@@ -1,6 +1,5 @@
 'use client';
 import { useAuth } from '@/lib/auth-context';
-import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, where, onSnapshot, orderBy, doc, getDoc } from 'firebase/firestore';
 import Link from 'next/link';
@@ -9,6 +8,8 @@ import type { UserProfile } from '@/types/user';
 
 interface Submission { id: string; challengeId: string; status: string; feedback?: string; latestFileUrl?: string; }
 interface Certificate { id: string; userId: string; challengeId: string; url: string; createdAt: any; }
+
+import { Navbar } from '@/components/Navbar';
 
 export default function Dashboard() {
 	const { user } = useAuth();
@@ -28,15 +29,19 @@ export default function Dashboard() {
 	if (!profile) return <div>No profile found.</div>;
 
 	return (
-		<div className="space-y-8">
-			<section>
-				<h1 className="text-2xl font-bold">Welcome, {profile.displayName || profile.email}!</h1>
-				<p className="text-lg">Role: {profile.role}</p>
-			</section>
-			{profile.role === 'student' ? <StudentDashboard user={user} /> : <MentorDashboard user={user} />}
-		</div>
+		<>
+			<Navbar />
+			<div className="space-y-8">
+				<section>
+					<h1 className="text-2xl font-bold">Welcome, {profile.displayName || profile.email}!</h1>
+					<p className="text-lg">Role: {profile.role}</p>
+				</section>
+				{profile.role === 'student' ? <StudentDashboard user={user} /> : <MentorDashboard user={user} />}
+			</div>
+		</>
 	);
 }
+
 
 function StudentDashboard({ user }: { user: any }) {
 	const [subs, setSubs] = useState<Submission[]>([]);
@@ -83,13 +88,35 @@ function StudentDashboard({ user }: { user: any }) {
 	);
 }
 
+import MentorChallengeForm from '@/components/MentorChallengeForm';
+import { useEffect, useState } from 'react';
+import { getMentorChallenges } from '@/services/challengeService';
+import type { Challenge } from '@/types/challenge';
+
 function MentorDashboard({ user }: { user: any }) {
-	// Placeholder for mentor-specific dashboard
+	const [challenges, setChallenges] = useState<Challenge[]>([]);
+	useEffect(() => {
+		if (!user) return;
+		getMentorChallenges(user.uid).then(setChallenges);
+	}, [user]);
 	return (
 		<section>
-			<h2 className="text-xl font-bold">Mentor Dashboard</h2>
-			<p>Here you will see your students, pending submissions, and can create new challenges.</p>
-			{/* TODO: Implement mentor dashboard logic */}
+			<h2 className="text-xl font-bold mb-4">Mentor Dashboard</h2>
+			<MentorChallengeForm onCreated={() => getMentorChallenges(user.uid).then(setChallenges)} />
+			<div className="mt-8">
+				<h3 className="font-semibold mb-2">Your Challenges</h3>
+				{challenges.length === 0 && <p className="text-gray-500">No challenges posted yet.</p>}
+				<div className="grid gap-4">
+					{challenges.map(c => (
+						<div key={c.id} className="rounded-xl border p-4 bg-white">
+							<img src={c.imageUrl} alt={c.title} className="w-full h-40 object-cover rounded mb-2" />
+							<h4 className="font-bold text-lg">{c.title}</h4>
+							<p className="text-gray-700 mb-2">{c.description}</p>
+							<p className="text-xs text-gray-500">Applicants: {c.applicants?.length || 0}</p>
+						</div>
+					))}
+				</div>
+			</div>
 		</section>
 	);
 }

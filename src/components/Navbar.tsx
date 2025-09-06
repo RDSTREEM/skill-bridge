@@ -1,8 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { ProfileDropdown } from './ProfileDropdown';
 
 
 export function Navbar() {
@@ -15,11 +14,7 @@ return (
 <Link href="/challenges" className="hover:underline">Challenges</Link>
 {user && <Link href="/dashboard" className="hover:underline">Dashboard</Link>}
 <Link href="/admin" className="hover:underline">Admin</Link>
-{user ? (
-<button onClick={()=>signOut(auth)} className="px-3 py-1.5 rounded bg-gray-900 text-white">Logout</button>
-) : (
-<Link href="/login" className="px-3 py-1.5 rounded bg-gray-900 text-white">Login</Link>
-)}
+{user ? <ProfileDropdown /> : <Link href="/login" className="px-3 py-1.5 rounded bg-gray-900 text-white">Login</Link>}
 </nav>
 </div>
 </header>

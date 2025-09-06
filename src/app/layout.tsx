@@ -15,7 +15,6 @@ return (
 <html lang="en">
 <body className="min-h-screen bg-gray-50 text-gray-900">
 <AuthProvider>
-<Navbar />
 <main className="max-w-5xl mx-auto p-4 md:p-6">{children}</main>
 </AuthProvider>
 </body>
