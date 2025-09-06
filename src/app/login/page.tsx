@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserProfile } from '@/services/userService';
+import type { UserRole } from '@/types/user';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -13,6 +15,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState<UserRole>('student');
   const router = useRouter();
 
   const submit = async (e: React.FormEvent) => {
@@ -24,8 +27,16 @@ export default function LoginPage() {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const user=userCredential.user
+        const user = userCredential.user;
         await sendEmailVerification(user);
+        // Create user profile in Firestore
+        await createUserProfile({
+          uid: user.uid,
+          email: user.email || '',
+          displayName: user.displayName || '',
+          role,
+          createdAt: Date.now(),
+        });
       }
       router.push('/dashboard');
     } catch (err: unknown) {
@@ -45,7 +56,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-center">
           {mode === 'login' ? 'Welcome back' : 'Create your account'}
         </h1>
-        <form onSubmit={submit} className="space-y-3">
+  <form onSubmit={submit} className="space-y-3">
           <Input
             placeholder="Email"
             type="email"
@@ -60,6 +71,20 @@ export default function LoginPage() {
             onChange={e => setPassword(e.target.value)}
             required
           />
+          {mode === 'signup' && (
+            <div>
+              <label className="block mb-1 font-medium">I am a:</label>
+              <select
+                className="w-full border rounded px-2 py-1"
+                value={role}
+                onChange={e => setRole(e.target.value as UserRole)}
+                required
+              >
+                <option value="student">Student</option>
+                <option value="mentor">Mentor</option>
+              </select>
+            </div>
+          )}
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" className="w-full" disabled={loading}>
             {loading
