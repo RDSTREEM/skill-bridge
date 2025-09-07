@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 firebase-service-account.json
+
 # testing
 /coverage
 
