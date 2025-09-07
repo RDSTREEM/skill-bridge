@@ -92,6 +92,7 @@ import MentorChallengeForm from '@/components/MentorChallengeForm';
 import { useEffect, useState } from 'react';
 import { getMentorChallenges } from '@/services/challengeService';
 import type { Challenge } from '@/types/challenge';
+import ApplicantReview from '@/components/ApplicantReview';
 
 function MentorDashboard({ user }: { user: any }) {
 	const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -99,24 +100,41 @@ function MentorDashboard({ user }: { user: any }) {
 		if (!user) return;
 		getMentorChallenges(user.uid).then(setChallenges);
 	}, [user]);
-	return (
-		<section>
-			<h2 className="text-xl font-bold mb-4">Mentor Dashboard</h2>
-			<MentorChallengeForm onCreated={() => getMentorChallenges(user.uid).then(setChallenges)} />
-			<div className="mt-8">
-				<h3 className="font-semibold mb-2">Your Challenges</h3>
-				{challenges.length === 0 && <p className="text-gray-500">No challenges posted yet.</p>}
-				<div className="grid gap-4">
-					{challenges.map(c => (
-						<div key={c.id} className="rounded-xl border p-4 bg-white">
-							<img src={c.imageUrl} alt={c.title} className="w-full h-40 object-cover rounded mb-2" />
-							<h4 className="font-bold text-lg">{c.title}</h4>
-							<p className="text-gray-700 mb-2">{c.description}</p>
-							<p className="text-xs text-gray-500">Applicants: {c.applicants?.length || 0}</p>
-						</div>
-					))}
+		const handleDecision = async (challengeId: string, studentId: string, decision: 'accepted' | 'rejected') => {
+			await fetch(`/api/challenges/${challengeId}/decision`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ studentId, decision }),
+			});
+			// Refresh challenges
+			getMentorChallenges(user.uid).then(setChallenges);
+		};
+
+		return (
+			<section>
+				<h2 className="text-xl font-bold mb-4">Mentor Dashboard</h2>
+				<MentorChallengeForm onCreated={() => getMentorChallenges(user.uid).then(setChallenges)} />
+				<div className="mt-8">
+					<h3 className="font-semibold mb-2">Your Challenges</h3>
+					{challenges.length === 0 && <p className="text-gray-500">No challenges posted yet.</p>}
+					<div className="grid gap-4">
+						{challenges.map(c => (
+							<div key={c.id} className="rounded-xl border p-4 bg-white">
+								<img src={c.imageUrl} alt={c.title} className="w-full h-40 object-cover rounded mb-2" />
+								<h4 className="font-bold text-lg">{c.title}</h4>
+								<p className="text-gray-700 mb-2">{c.description}</p>
+								<p className="text-xs text-gray-500">Applicants: {c.applicants?.length || 0}</p>
+								<ApplicantReview
+									challengeId={c.id!}
+									applicants={c.applicants || []}
+									applicantsEssay={c.applicantsEssay}
+									applicantsStatus={c.applicantsStatus}
+									onDecision={(studentId, decision) => handleDecision(c.id!, studentId, decision)}
+								/>
+							</div>
+						))}
+					</div>
 				</div>
-			</div>
-		</section>
-	);
+			</section>
+		);
 }

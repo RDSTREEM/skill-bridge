@@ -6,4 +6,8 @@ export interface Challenge {
   createdAt: number;
   mentorId: string;
   applicants?: string[];
+  applicantsEssay?: Record<string, string>; // userId -> essay
+  applicantsStatus?: Record<string, 'accepted' | 'rejected' | 'pending'>;
+  acceptEmail?: string;
+  rejectEmail?: string;
 }

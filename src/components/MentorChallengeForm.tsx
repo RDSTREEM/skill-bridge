@@ -3,11 +3,14 @@ import { createChallenge } from '@/services/challengeService';
 import { useAuth } from '@/lib/auth-context';
 import { Button } from './ui/Button';
 
+
 export default function MentorChallengeForm({ onCreated }: { onCreated?: () => void }) {
   const { user } = useAuth();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [acceptEmail, setAcceptEmail] = useState('');
+  const [rejectEmail, setRejectEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,10 +25,14 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
         description,
         imageUrl,
         mentorId: user.uid,
+        acceptEmail,
+        rejectEmail,
       });
       setTitle('');
       setDescription('');
       setImageUrl('');
+      setAcceptEmail('');
+      setRejectEmail('');
       if (onCreated) onCreated();
     } catch (err: any) {
       setError(err.message);
@@ -57,6 +64,20 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
         value={imageUrl}
         onChange={e => setImageUrl(e.target.value)}
         required
+      />
+      <textarea
+        className="w-full border rounded px-3 py-2"
+        placeholder="Custom acceptance email (optional)"
+        value={acceptEmail}
+        onChange={e => setAcceptEmail(e.target.value)}
+        rows={3}
+      />
+      <textarea
+        className="w-full border rounded px-3 py-2"
+        placeholder="Custom rejection email (optional)"
+        value={rejectEmail}
+        onChange={e => setRejectEmail(e.target.value)}
+        rows={3}
       />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <Button type="submit" disabled={loading}>{loading ? 'Posting...' : 'Post Challenge'}</Button>
