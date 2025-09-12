@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { theme } = require("./tailwind.config");
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  theme: {
+    extend: {
+      ...theme.extend,
+    },
+  },
 };
 
 export default nextConfig;
+

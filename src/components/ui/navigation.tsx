@@ -1,7 +1,6 @@
 "use client";
-
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
 import { Button } from "./button";
 import { 
   Home, 
@@ -23,12 +22,8 @@ const navItems = [
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-  const location = router.asPath;
-
-  const isActive = (path: string) => {
-    return location === path;
-  };
+  const pathname = usePathname();
+  const isActive = (path: string) => pathname === path;
 
   return (
     <>
@@ -120,12 +115,8 @@ export function MobileNav() {
 }
 
 export function DesktopNav() {
-  const router = useRouter();
-  const location = router.asPath;
-
-  const isActive = (path: string) => {
-    return location === path;
-  };
+  const pathname = usePathname();
+  const isActive = (path: string) => pathname === path;
 
   return (
     <header className="hidden md:block sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">

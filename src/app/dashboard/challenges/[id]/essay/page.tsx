@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 export default function EssaySubmissionPage({ params }: { params: { id: string } }) {
   const challengeId = params.id;

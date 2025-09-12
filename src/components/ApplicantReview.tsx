@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Button } from './ui/Button';
+import { Button } from './ui/button';
 
 interface Props {
   challengeId: string;

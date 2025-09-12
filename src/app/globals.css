@@ -16,3 +16,206 @@ html, body, :root { height: 100%; }
     @apply border-border outline-ring/50; }
   body {
     @apply bg-background text-foreground; } }
+
+
+
+    #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+@layer base {
+  :root {
+    /* Core Brand Colors */
+    --background: 0 0% 100%;
+    --foreground: 222 84% 5%;
+
+    /* Brand Primary - Educational Blue */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 217 91% 55%;
+    --primary-light: 217 91% 90%;
+
+    /* Success - Ethiopian Green */
+    --success: 142 69% 58%;
+    --success-foreground: 0 0% 100%;
+    --success-light: 142 69% 95%;
+
+    /* Warning - Golden Yellow */
+    --warning: 45 93% 58%;
+    --warning-foreground: 222 84% 5%;
+    --warning-light: 45 93% 95%;
+
+    /* Ethiopian Flag Accent */
+    --accent-red: 0 84% 60%;
+    --accent-yellow: 45 93% 58%;
+    --accent-green: 142 69% 58%;
+
+    /* UI Colors */
+    --card: 0 0% 100%;
+    --card-foreground: 222 84% 5%;
+    --card-hover: 217 91% 98%;
+
+    --secondary: 217 32% 96%;
+    --secondary-foreground: 222 84% 15%;
+    --secondary-hover: 217 32% 92%;
+
+    --muted: 217 32% 96%;
+    --muted-foreground: 217 13% 50%;
+
+    --border: 217 32% 89%;
+    --input: 217 32% 89%;
+    --ring: 217 91% 60%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Certificate Colors */
+    --certificate-bg: 217 91% 98%;
+    --certificate-border: 217 91% 60%;
+    --certificate-seal: 45 93% 58%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
+    --gradient-success: linear-gradient(135deg, hsl(142 69% 58%), hsl(142 69% 68%));
+    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(142 69% 58%) 100%);
+    --gradient-certificate: linear-gradient(135deg, hsl(217 91% 98%) 0%, hsl(45 93% 98%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(217 91% 60% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(217 91% 60% / 0.1), 0 2px 4px -2px hsl(217 91% 60% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(217 91% 60% / 0.1), 0 4px 6px -4px hsl(217 91% 60% / 0.1);
+    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
+
+    /* Typography */
+    --radius: 0.5rem;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+
+    /* Animations */
+    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 222 84% 5%;
+    --foreground: 217 32% 96%;
+
+    --primary: 217 91% 65%;
+    --primary-foreground: 222 84% 5%;
+    --primary-hover: 217 91% 70%;
+    --primary-light: 217 91% 15%;
+
+    --success: 142 69% 63%;
+    --success-foreground: 222 84% 5%;
+    --success-light: 142 69% 15%;
+
+    --card: 222 84% 8%;
+    --card-foreground: 217 32% 96%;
+    --card-hover: 222 84% 10%;
+
+    --secondary: 222 84% 12%;
+    --secondary-foreground: 217 32% 90%;
+    --secondary-hover: 222 84% 15%;
+
+    --muted: 222 84% 12%;
+    --muted-foreground: 217 32% 65%;
+
+    --border: 222 84% 15%;
+    --input: 222 84% 15%;
+    --ring: 217 91% 65%;
+
+    --certificate-bg: 222 84% 8%;
+    --certificate-border: 217 91% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border transition-fast;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Mobile-first typography */
+  .heading-xl { @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight; }
+  .heading-lg { @apply text-2xl md:text-3xl font-bold tracking-tight; }
+  .heading-md { @apply text-xl md:text-2xl font-semibold; }
+  .heading-sm { @apply text-lg font-semibold; }
+  
+  .body-lg { @apply text-base md:text-lg; }
+  .body-sm { @apply text-sm; }
+  .caption { @apply text-xs text-muted-foreground; }
+
+  /* Ethiopian flag pattern */
+  .flag-pattern {
+    background: linear-gradient(to right, 
+      hsl(var(--accent-green)) 0%, 
+      hsl(var(--accent-green)) 33%, 
+      hsl(var(--accent-yellow)) 33%, 
+      hsl(var(--accent-yellow)) 66%, 
+      hsl(var(--accent-red)) 66%
+    );
+    height: 4px;
+  }
+
+  /* Mobile-optimized scrollbars */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 2px;
+  }
+
+  /* Focus styles for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+  }
+}

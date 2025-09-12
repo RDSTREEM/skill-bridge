@@ -5,8 +5,8 @@ import { auth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { createUserProfile, isUsernameTaken, createMainCertificate } from '@/services/userService';
 import type { UserRole } from '@/types/user';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/Input';
 
 export default function LoginPage() {
