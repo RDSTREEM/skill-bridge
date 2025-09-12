@@ -10,4 +10,8 @@ export interface Challenge {
   applicantsStatus?: Record<string, 'accepted' | 'rejected' | 'pending'>;
   acceptEmail?: string;
   rejectEmail?: string;
+  submissionStart?: number; // timestamp
+  submissionDeadline?: number; // timestamp
+  telegram?: string; // mentor's telegram account
+  faq?: { question: string; answer: string }[];
 }

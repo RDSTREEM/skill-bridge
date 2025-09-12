@@ -95,11 +95,12 @@ import type { Challenge } from '@/types/challenge';
 import ApplicantReview from '@/components/ApplicantReview';
 
 function MentorDashboard({ user }: { user: any }) {
-	const [challenges, setChallenges] = useState<Challenge[]>([]);
-	useEffect(() => {
-		if (!user) return;
-		getMentorChallenges(user.uid).then(setChallenges);
-	}, [user]);
+		const [challenges, setChallenges] = useState<Challenge[]>([]);
+		useEffect(() => {
+			if (!user) return;
+			getMentorChallenges(user.uid).then(setChallenges);
+		}, [user]);
+
 		const handleDecision = async (challengeId: string, studentId: string, decision: 'accepted' | 'rejected') => {
 			await fetch(`/api/challenges/${challengeId}/decision`, {
 				method: 'POST',
@@ -107,6 +108,12 @@ function MentorDashboard({ user }: { user: any }) {
 				body: JSON.stringify({ studentId, decision }),
 			});
 			// Refresh challenges
+			getMentorChallenges(user.uid).then(setChallenges);
+		};
+
+		const handleDelete = async (challengeId: string) => {
+			if (!window.confirm('Are you sure you want to delete this challenge? This cannot be undone.')) return;
+			await fetch(`/api/challenges/${challengeId}/delete`, { method: 'DELETE' });
 			getMentorChallenges(user.uid).then(setChallenges);
 		};
 
@@ -124,13 +131,18 @@ function MentorDashboard({ user }: { user: any }) {
 								<h4 className="font-bold text-lg">{c.title}</h4>
 								<p className="text-gray-700 mb-2">{c.description}</p>
 								<p className="text-xs text-gray-500">Applicants: {c.applicants?.length || 0}</p>
-								<ApplicantReview
-									challengeId={c.id!}
-									applicants={c.applicants || []}
-									applicantsEssay={c.applicantsEssay}
-									applicantsStatus={c.applicantsStatus}
-									onDecision={(studentId, decision) => handleDecision(c.id!, studentId, decision)}
-								/>
+								<a
+									href={`/dashboard/challenges/${c.id}/applicants`}
+									className="inline-block mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+								>
+									View Applicants
+								</a>
+								<button
+									onClick={() => handleDelete(c.id!)}
+									className="ml-2 mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+								>
+									Delete
+								</button>
 							</div>
 						))}
 					</div>

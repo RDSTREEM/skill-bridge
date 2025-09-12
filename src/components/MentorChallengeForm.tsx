@@ -11,6 +11,10 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
   const [imageUrl, setImageUrl] = useState('');
   const [acceptEmail, setAcceptEmail] = useState('');
   const [rejectEmail, setRejectEmail] = useState('');
+  const [submissionStart, setSubmissionStart] = useState('');
+  const [submissionDeadline, setSubmissionDeadline] = useState('');
+  const [telegram, setTelegram] = useState('');
+  const [faq, setFaq] = useState<{ question: string; answer: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,13 +31,19 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
         mentorId: user.uid,
         acceptEmail,
         rejectEmail,
+        submissionStart: submissionStart ? new Date(submissionStart).getTime() : undefined,
+        submissionDeadline: submissionDeadline ? new Date(submissionDeadline).getTime() : undefined,
+        telegram,
+        faq,
       });
       setTitle('');
       setDescription('');
       setImageUrl('');
-      setAcceptEmail('');
-      setRejectEmail('');
-      if (onCreated) onCreated();
+  setAcceptEmail('');
+  setRejectEmail('');
+  setTelegram('');
+  setFaq([]);
+  if (onCreated) onCreated();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -58,6 +68,56 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
         onChange={e => setDescription(e.target.value)}
         required
       />
+      <input
+        className="w-full border rounded px-3 py-2"
+        placeholder="Mentor Telegram Account (required)"
+        value={telegram}
+        onChange={e => setTelegram(e.target.value)}
+        required
+      />
+      <div className="mb-4">
+        <label className="block font-medium mb-1">Challenge FAQ (Q&A)</label>
+        {faq.map((item, i) => (
+          <div key={i} className="flex gap-2 mb-2">
+            <input
+              className="flex-1 border rounded px-2 py-1"
+              placeholder="Question"
+              value={item.question}
+              onChange={e => setFaq(faq => faq.map((q, idx) => idx === i ? { ...q, question: e.target.value } : q))}
+              required
+            />
+            <input
+              className="flex-1 border rounded px-2 py-1"
+              placeholder="Answer"
+              value={item.answer}
+              onChange={e => setFaq(faq => faq.map((q, idx) => idx === i ? { ...q, answer: e.target.value } : q))}
+              required
+            />
+            <button type="button" onClick={() => setFaq(faq => faq.filter((_, idx) => idx !== i))} className="px-2 py-1 bg-red-500 text-white rounded">Remove</button>
+          </div>
+        ))}
+        <button type="button" onClick={() => setFaq([...faq, { question: '', answer: '' }])} className="px-3 py-1 bg-blue-500 text-white rounded">Add Q&A</button>
+      </div>
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <label className="block text-sm font-medium mb-1">Submission Start</label>
+          <input
+            type="datetime-local"
+            className="w-full border rounded px-3 py-2"
+            value={submissionStart}
+            onChange={e => setSubmissionStart(e.target.value)}
+          />
+        </div>
+        <div className="flex-1">
+          <label className="block text-sm font-medium mb-1">Submission Deadline</label>
+          <input
+            type="datetime-local"
+            className="w-full border rounded px-3 py-2"
+            value={submissionDeadline}
+            onChange={e => setSubmissionDeadline(e.target.value)}
+          />
+        </div>
+      </div>
       <input
         className="w-full border rounded px-3 py-2"
         placeholder="Image URL"

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { createUserProfile } from '@/services/userService';
+import { createUserProfile, isUsernameTaken, createMainCertificate } from '@/services/userService';
 import type { UserRole } from '@/types/user';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState<UserRole>('student');
+  const [username, setUsername] = useState('');
   const router = useRouter();
 
   const submit = async (e: React.FormEvent) => {
@@ -26,17 +27,38 @@ export default function LoginPage() {
       if (mode === 'login') {
         await signInWithEmailAndPassword(auth, email, password);
       } else {
+        // Username validation
+        if (!username.trim()) {
+          setError('Username is required.');
+          setLoading(false);
+          return;
+        }
+        if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+          setError('Username must be 3-20 characters, letters, numbers, or underscores.');
+          setLoading(false);
+          return;
+        }
+        if (await isUsernameTaken(username)) {
+          setError('Username is already taken.');
+          setLoading(false);
+          return;
+        }
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         await sendEmailVerification(user);
         // Create user profile in Firestore
-        await createUserProfile({
+        const profile = {
           uid: user.uid,
           email: user.email || '',
           displayName: user.displayName || '',
+          username,
           role,
           createdAt: Date.now(),
-        });
+        };
+        await createUserProfile(profile);
+        if (role === 'student') {
+          await createMainCertificate(profile);
+        }
       }
       router.push('/dashboard');
     } catch (err: unknown) {
@@ -56,7 +78,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-center">
           {mode === 'login' ? 'Welcome back' : 'Create your account'}
         </h1>
-  <form onSubmit={submit} className="space-y-3">
+        <form onSubmit={submit} className="space-y-3">
           <Input
             placeholder="Email"
             type="email"
@@ -72,18 +94,28 @@ export default function LoginPage() {
             required
           />
           {mode === 'signup' && (
-            <div>
-              <label className="block mb-1 font-medium">I am a:</label>
-              <select
-                className="w-full border rounded px-2 py-1"
-                value={role}
-                onChange={e => setRole(e.target.value as UserRole)}
+            <>
+              <Input
+                placeholder="Username"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
                 required
-              >
-                <option value="student">Student</option>
-                <option value="mentor">Mentor</option>
-              </select>
-            </div>
+                minLength={3}
+                maxLength={20}
+              />
+              <div>
+                <label className="block mb-1 font-medium">I am a:</label>
+                <select
+                  className="w-full border rounded px-2 py-1"
+                  value={role}
+                  onChange={e => setRole(e.target.value as UserRole)}
+                  required
+                >
+                  <option value="student">Student</option>
+                  <option value="mentor">Mentor</option>
+                </select>
+              </div>
+            </>
           )}
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" className="w-full" disabled={loading}>
