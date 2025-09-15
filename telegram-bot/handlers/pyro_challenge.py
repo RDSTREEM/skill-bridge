@@ -1,8 +1,13 @@
 
+
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import requests
-from config import BACKEND_URL
+import os
+from dotenv import load_dotenv
+
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+BACKEND_URL = os.getenv('BACKEND_URL')
 
 def register_handlers(app):
     @app.on_message(filters.command("challenge"))

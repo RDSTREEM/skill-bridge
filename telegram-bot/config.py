@@ -1,8 +1,10 @@
-# Bot configuration
-# Use your production credentials here
-API_ID = '23431771'
-API_HASH = "c5eb1bb93f45da1518a175ace841f51d"
-BOT_TOKEN = "8216666758:AAGceYM0-WBvvwI4MJdqe6rKdUkV8dGyqGs"  # <-- Replace with your actual bot token
+# Bot configuration loaded from .env
+import os
+from dotenv import load_dotenv
 
-# Backend URL for API endpoints
-BACKEND_URL = "http://localhost:3000"  # Change to your deployed backend if needed
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+
+API_ID = os.getenv('API_ID')
+API_HASH = os.getenv('API_HASH')
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+BACKEND_URL = os.getenv('BACKEND_URL')

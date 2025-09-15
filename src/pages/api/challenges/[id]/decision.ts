@@ -43,8 +43,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     // Send email
     let customText = undefined;
-    if (decision === 'accepted' && challenge.acceptEmail) {
-      customText = challenge.acceptEmail;
+    if (decision === 'accepted') {
+      if (challenge.acceptEmail) {
+        customText = challenge.acceptEmail;
+      } else {
+        customText = `Congratulations! You have been accepted to the challenge: ${challenge.title}.`;
+      }
+      if (challenge.telegram) {
+        customText += `\n\nJoin the challenge group here: ${challenge.telegram}`;
+      }
     } else if (decision === 'rejected' && challenge.rejectEmail) {
       customText = challenge.rejectEmail;
     }

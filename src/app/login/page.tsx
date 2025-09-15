@@ -5,9 +5,9 @@ import { auth } from '@/lib/firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { createUserProfile, isUsernameTaken, createMainCertificate } from '@/services/userService';
 import type { UserRole } from '@/types/user';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/Input';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -25,7 +25,14 @@ export default function LoginPage() {
     setLoading(true);
     try {
       if (mode === 'login') {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        if (!user.emailVerified) {
+          setError('Please verify your email before logging in. Check your inbox for the verification link.');
+          setLoading(false);
+          return;
+        }
+        router.push('/dashboard');
       } else {
         // Username validation
         if (!username.trim()) {
@@ -59,8 +66,10 @@ export default function LoginPage() {
         if (role === 'student') {
           await createMainCertificate(profile);
         }
+        setError('A verification email has been sent. Please check your inbox and verify your email before logging in.');
+        setLoading(false);
+        return;
       }
-      router.push('/dashboard');
     } catch (err: unknown) {
       if (err && typeof err === 'object' && 'message' in err && typeof (err as { message?: unknown }).message === 'string') {
         setError((err as { message: string }).message);
@@ -79,14 +88,16 @@ export default function LoginPage() {
           {mode === 'login' ? 'Welcome back' : 'Create your account'}
         </h1>
         <form onSubmit={submit} className="space-y-3">
-          <Input
+          <input
+            className="w-full border rounded px-2 py-2"
             placeholder="Email"
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
           />
-          <Input
+          <input
+            className="w-full border rounded px-2 py-2"
             placeholder="Password"
             type="password"
             value={password}
@@ -95,7 +106,8 @@ export default function LoginPage() {
           />
           {mode === 'signup' && (
             <>
-              <Input
+              <input
+                className="w-full border rounded px-2 py-2"
                 placeholder="Username"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
@@ -125,6 +137,9 @@ export default function LoginPage() {
               ? 'Log in'
               : 'Sign up'}
           </Button>
+          {mode === 'signup' && error && error.includes('verification email') && (
+            <p className="text-sm text-blue-600 text-center">After verifying your email, you can log in and will be redirected to your dashboard.</p>
+          )}
         </form>
         <p className="text-center text-sm">
           {mode === 'login' ? (

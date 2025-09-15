@@ -1,10 +1,17 @@
 
 
+
+import os
+from dotenv import load_dotenv
 from pyrogram import Client
-from config import API_ID, API_HASH, BOT_TOKEN
 import handlers.pyro_start as pyro_start
 import handlers.pyro_challenge as pyro_challenge
 import handlers.pyro_help as pyro_help
+
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+API_ID = os.getenv('API_ID')
+API_HASH = os.getenv('API_HASH')
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 def main():
     app = Client(

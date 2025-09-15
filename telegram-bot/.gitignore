@@ -1,2 +1,4 @@
+# Ignore environment variables file
+.env
 # Pyrogram session file
 skillbridgebot.session

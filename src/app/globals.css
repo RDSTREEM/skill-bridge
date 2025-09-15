@@ -170,7 +170,7 @@ html, body, :root { height: 100%; }
 
 @layer base {
   * {
-    @apply border-border transition-fast;
+    @apply border-border transition-all;
   }
 
   body {

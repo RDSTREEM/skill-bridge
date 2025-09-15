@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createChallenge } from '@/services/challengeService';
 import { useAuth } from '@/lib/auth-context';
-import { Button } from './ui/button';
+import { Button } from './ui/Button';
 
 
 export default function MentorChallengeForm({ onCreated }: { onCreated?: () => void }) {
