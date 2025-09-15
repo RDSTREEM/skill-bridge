@@ -72,10 +72,8 @@ export default function ApplicantEssayPage({ params }: { params: { id: string; s
     setError(null);
     startTransition(async () => {
       try {
-        const res = await fetch(`/api/challenges/${challengeId}/mark-complete`, {
+        const res = await fetch(`/api/challenges/${challengeId}/mark-complete?studentId=${studentId}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ studentId }),
         });
         if (!res.ok) {
           const data = await res.json();

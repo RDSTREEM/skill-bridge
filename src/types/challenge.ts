@@ -14,4 +14,6 @@ export interface Challenge {
   submissionDeadline?: number; // timestamp
   telegram?: string; // mentor's telegram account
   faq?: { question: string; answer: string }[];
+  association: string; // school, company, or e-association name
+  difficulty: 'beginner' | 'intermediate' | 'experienced';
 }

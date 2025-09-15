@@ -12,5 +12,6 @@ export interface Certificate {
   mentorUsername?: string;
   mentorFeedback?: string;
   challengesCompleted?: number;
-  // Add more fields as needed
+  challengesApplied?: number;
+  challengesAccepted?: number;
 }

@@ -1,6 +1,7 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, updateDoc, doc, arrayUnion, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { Challenge } from '@/types/challenge';
+import { incrementCertificateStat } from './certificateService';
 
 export async function createChallenge(challenge: Omit<Challenge, 'id' | 'createdAt' | 'applicants'> & { mentorId: string }) {
   const docRef = await addDoc(collection(db, 'challenges'), {
@@ -16,6 +17,7 @@ export async function applyToChallenge(challengeId: string, userId: string) {
   await updateDoc(challengeRef, {
     applicants: arrayUnion(userId),
   });
+  await incrementCertificateStat(userId, 'challengesApplied');
 }
 
 export async function getChallenge(challengeId: string): Promise<Challenge | null> {

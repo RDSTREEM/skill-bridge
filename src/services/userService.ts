@@ -13,6 +13,8 @@ export async function createMainCertificate(user: UserProfile) {
     email: user.email,
     status: 'Beginner',
     challengesCompleted: 0,
+    challengesApplied: 0,
+    challengesAccepted: 0,
   };
   await setDoc(doc(db, 'certificates', cert.id), cert);
 }

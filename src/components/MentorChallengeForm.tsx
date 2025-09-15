@@ -15,6 +15,8 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
   const [submissionDeadline, setSubmissionDeadline] = useState('');
   const [telegram, setTelegram] = useState('');
   const [faq, setFaq] = useState<{ question: string; answer: string }[]>([]);
+  const [association, setAssociation] = useState('');
+  const [difficulty, setDifficulty] = useState<'beginner' | 'intermediate' | 'experienced'>('beginner');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,15 +37,19 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
         submissionDeadline: submissionDeadline ? new Date(submissionDeadline).getTime() : undefined,
         telegram,
         faq,
+        association,
+        difficulty,
       });
-      setTitle('');
-      setDescription('');
-      setImageUrl('');
-  setAcceptEmail('');
-  setRejectEmail('');
-  setTelegram('');
-  setFaq([]);
-  if (onCreated) onCreated();
+    setTitle('');
+    setDescription('');
+    setImageUrl('');
+    setAcceptEmail('');
+    setRejectEmail('');
+    setTelegram('');
+    setFaq([]);
+    setAssociation('');
+    setDifficulty('beginner');
+    if (onCreated) onCreated();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -61,6 +67,26 @@ export default function MentorChallengeForm({ onCreated }: { onCreated?: () => v
         onChange={e => setTitle(e.target.value)}
         required
       />
+      <input
+        className="w-full border rounded px-3 py-2"
+        placeholder="Association / School / Company Name"
+        value={association}
+        onChange={e => setAssociation(e.target.value)}
+        required
+      />
+      <div>
+        <label className="block font-medium mb-1">Difficulty Level</label>
+        <select
+          className="w-full border rounded px-3 py-2"
+          value={difficulty}
+          onChange={e => setDifficulty(e.target.value as any)}
+          required
+        >
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="experienced">Experienced</option>
+        </select>
+      </div>
       <textarea
         className="w-full border rounded px-3 py-2"
         placeholder="Description"

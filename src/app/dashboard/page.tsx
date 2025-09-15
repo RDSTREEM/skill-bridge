@@ -71,20 +71,23 @@ function StudentDashboard({ user }: { user: any }) {
 					<div className="mt-4 grid md:grid-cols-2 gap-5">
 						{subs.length === 0 && <p className="text-sm text-gray-500 col-span-2">No submissions yet. Browse <Link className="underline" href="/challenges">challenges</Link>.</p>}
 						{subs.map(s => (
-							<div key={s.id} className="rounded-2xl border bg-white shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all">
-								<div className="flex items-center gap-2 mb-1">
-									<span className="font-medium">Challenge:</span>
-									<Link href={`/challenges/${s.challengeId}`} className="underline text-primary font-semibold">{s.challengeId}</Link>
-								</div>
-								<div className="flex items-center gap-2">
-									<span className="text-sm">Status:</span>
-									<Badge variant={s.status === 'accepted' ? 'success' : s.status === 'rejected' ? 'destructive' : 'secondary'}>
-										{s.status}
-									</Badge>
-								</div>
-								{s.feedback && <p className="text-sm text-muted-foreground">Feedback: {s.feedback}</p>}
-								{s.latestFileUrl && <a className="text-sm underline text-blue-600" href={s.latestFileUrl} target="_blank">View latest upload</a>}
-							</div>
+										<div key={s.id} className={`rounded-2xl border shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all ${s.status === 'completed' ? 'bg-gradient-to-r from-green-100 to-blue-50 border-green-400' : 'bg-white'}`}>
+											<div className="flex items-center gap-2 mb-1">
+												<span className="font-medium">Challenge:</span>
+												<Link href={`/challenges/${s.challengeId}`} className="underline text-primary font-semibold">{s.challengeId}</Link>
+											</div>
+											<div className="flex items-center gap-2">
+												<span className="text-sm">Status:</span>
+												<Badge variant={s.status === 'accepted' ? 'success' : s.status === 'rejected' ? 'destructive' : s.status === 'completed' ? 'success' : 'secondary'}>
+													{s.status}
+												</Badge>
+											</div>
+											{s.status === 'completed' && (
+												<Link href={`/certificates/challenge/challenge-${s.challengeId}-${user.uid}`} className="mt-2 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg font-semibold text-center shadow hover:from-green-600 hover:to-blue-600 transition-all">View Completion Certificate</Link>
+											)}
+											{s.feedback && <p className="text-sm text-muted-foreground">Feedback: {s.feedback}</p>}
+											{s.latestFileUrl && <a className="text-sm underline text-blue-600" href={s.latestFileUrl} target="_blank">View latest upload</a>}
+										</div>
 						))}
 					</div>
 				</section>
@@ -93,13 +96,13 @@ function StudentDashboard({ user }: { user: any }) {
 					<div className="mt-4 grid md:grid-cols-2 gap-5">
 						{certs.length === 0 && <p className="text-sm text-gray-500 col-span-2">No certificates yet.</p>}
 						{certs.map(c => (
-							<div key={c.id} className="rounded-2xl border bg-gradient-to-r from-yellow-100 to-yellow-50 shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all">
-								<div className="flex items-center gap-2 mb-1">
-									<span className="font-medium">Challenge:</span>
-									<Link href={`/challenges/${c.challengeId}`} className="underline text-primary font-semibold">{c.challengeId}</Link>
-								</div>
-								<a className="text-sm underline text-blue-600" href={c.url} target="_blank">Download certificate</a>
-							</div>
+										<div key={c.id} className="rounded-2xl border bg-gradient-to-r from-yellow-100 to-yellow-50 shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all">
+											<div className="flex items-center gap-2 mb-1">
+												<span className="font-medium">Challenge:</span>
+												<Link href={`/challenges/${c.challengeId}`} className="underline text-primary font-semibold">{c.challengeId}</Link>
+											</div>
+											<Link className="text-sm underline text-blue-600 font-semibold" href={`/certificates/${c.id}`}>View Certificate</Link>
+										</div>
 						))}
 					</div>
 				</section>
