@@ -1,221 +1,219 @@
+/* Import Tailwind v4 base */
 @import "tailwindcss";
-@import "tw-animate-css";
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
 
-@custom-variant dark (&:is(.dark *));
+/* Root theme variables */
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
 
-html, body, :root { height: 100%; }
+  --primary: oklch(0.205 0 0);
+  --primary-light: oklch(0.4 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --primary-hover: oklch(0.15 0 0);
 
-@theme inline { --radius-sm: calc(var(--radius) - 4px); --radius-md: calc(var(--radius) - 2px); --radius-lg: var(--radius); --radius-xl: calc(var(--radius) + 4px); --color-background: var(--background); --color-foreground: var(--foreground); --color-card: var(--card); --color-card-foreground: var(--card-foreground); --color-popover: var(--popover); --color-popover-foreground: var(--popover-foreground); --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground); --color-secondary: var(--secondary); --color-secondary-foreground: var(--secondary-foreground); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground); --color-accent: var(--accent); --color-accent-foreground: var(--accent-foreground); --color-destructive: var(--destructive); --color-border: var(--border); --color-input: var(--input); --color-ring: var(--ring); --color-chart-1: var(--chart-1); --color-chart-2: var(--chart-2); --color-chart-3: var(--chart-3); --color-chart-4: var(--chart-4); --color-chart-5: var(--chart-5); --color-sidebar: var(--sidebar); --color-sidebar-foreground: var(--sidebar-foreground); --color-sidebar-primary: var(--sidebar-primary); --color-sidebar-primary-foreground: var(--sidebar-primary-foreground); --color-sidebar-accent: var(--sidebar-accent); --color-sidebar-accent-foreground: var(--sidebar-accent-foreground); --color-sidebar-border: var(--sidebar-border); --color-sidebar-ring: var(--sidebar-ring); }
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
 
-:root { --radius: 0.625rem; --background: oklch(1 0 0); --foreground: oklch(0.145 0 0); --card: oklch(1 0 0); --card-foreground: oklch(0.145 0 0); --popover: oklch(1 0 0); --popover-foreground: oklch(0.145 0 0); --primary: oklch(0.205 0 0); --primary-foreground: oklch(0.985 0 0); --secondary: oklch(0.97 0 0); --secondary-foreground: oklch(0.205 0 0); --muted: oklch(0.97 0 0); --muted-foreground: oklch(0.556 0 0); --accent: oklch(0.97 0 0); --accent-foreground: oklch(0.205 0 0); --destructive: oklch(0.577 0.245 27.325); --border: oklch(0.922 0 0); --input: oklch(0.922 0 0); --ring: oklch(0.708 0 0); --chart-1: oklch(0.646 0.222 41.116); --chart-2: oklch(0.6 0.118 184.704); --chart-3: oklch(0.398 0.07 227.392); --chart-4: oklch(0.828 0.189 84.429); --chart-5: oklch(0.769 0.188 70.08); --sidebar: oklch(0.985 0 0); --sidebar-foreground: oklch(0.145 0 0); --sidebar-primary: oklch(0.205 0 0); --sidebar-primary-foreground: oklch(0.985 0 0); --sidebar-accent: oklch(0.97 0 0); --sidebar-accent-foreground: oklch(0.205 0 0); --sidebar-border: oklch(0.922 0 0); --sidebar-ring: oklch(0.708 0 0); }
+  --accent-yellow: oklch(0.97 0.5 90);
+  --accent-green: oklch(0.5 0.5 120);
+  --accent-red: oklch(0.5 0.5 0);
 
-.dark { --background: oklch(0.145 0 0); --foreground: oklch(0.985 0 0); --card: oklch(0.205 0 0); --card-foreground: oklch(0.985 0 0); --popover: oklch(0.205 0 0); --popover-foreground: oklch(0.985 0 0); --primary: oklch(0.922 0 0); --primary-foreground: oklch(0.205 0 0); --secondary: oklch(0.269 0 0); --secondary-foreground: oklch(0.985 0 0); --muted: oklch(0.269 0 0); --muted-foreground: oklch(0.708 0 0); --accent: oklch(0.269 0 0); --accent-foreground: oklch(0.985 0 0); --destructive: oklch(0.704 0.191 22.216); --border: oklch(1 0 0 / 10%); --input: oklch(1 0 0 / 15%); --ring: oklch(0.556 0 0); --chart-1: oklch(0.488 0.243 264.376); --chart-2: oklch(0.696 0.17 162.48); --chart-3: oklch(0.769 0.188 70.08); --chart-4: oklch(0.627 0.265 303.9); --chart-5: oklch(0.645 0.246 16.439); --sidebar: oklch(0.205 0 0); --sidebar-foreground: oklch(0.985 0 0); --sidebar-primary: oklch(0.488 0.243 264.376); --sidebar-primary-foreground: oklch(0.985 0 0); --sidebar-accent: oklch(0.269 0 0); --sidebar-accent-foreground: oklch(0.985 0 0); --sidebar-border: oklch(1 0 0 / 10%); --sidebar-ring: oklch(0.556 0 0); }
+  --shadow-glow: 0 0 15px rgba(0, 0, 0, 0.2);
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50; }
-  body {
-    @apply bg-background text-foreground; } }
-
-
-
-    #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--primary),
+    var(--primary-light)
+  );
+  --gradient-hero: linear-gradient(135deg, var(--primary), var(--secondary));
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Dark theme overrides */
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --ring: oklch(0.556 0 0);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Base body styles */
+.body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Border and ring */
+.border {
+  border: 1px solid var(--border);
+}
+.outline-ring {
+  outline: 2px solid var(--ring);
+}
+
+/* Headings */
+.heading-xl {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+@media (min-width: 768px) {
+  .heading-xl {
+    font-size: 4rem;
   }
-  to {
-    transform: rotate(360deg);
+}
+@media (min-width: 1024px) {
+  .heading-xl {
+    font-size: 5rem;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+.heading-lg {
+  font-size: 2rem;
+  font-weight: 700;
+}
+@media (min-width: 768px) {
+  .heading-lg {
+    font-size: 3rem;
   }
 }
 
+.heading-md {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+@media (min-width: 768px) {
+  .heading-md {
+    font-size: 2rem;
+  }
+}
+
+.heading-sm {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+/* Body text */
+.body-lg {
+  font-size: 1rem;
+}
+@media (min-width: 768px) {
+  .body-lg {
+    font-size: 1.125rem;
+  }
+}
+
+.body-sm {
+  font-size: 0.875rem;
+}
+.caption {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+/* Backgrounds */
+.bg-background {
+  background-color: var(--background);
+}
+.bg-primary {
+  background-color: var(--primary);
+}
+.bg-gradient-primary {
+  background-image: var(--gradient-primary);
+}
+.bg-gradient-hero {
+  background-image: var(--gradient-hero);
+}
+
+/* Foreground text */
+.text-foreground {
+  color: var(--foreground);
+}
+.text-primary {
+  color: var(--primary);
+}
+.text-muted-foreground {
+  color: var(--muted-foreground);
+}
+.text-accent-yellow {
+  color: var(--accent-yellow);
+}
+
+/* Shadows */
+.shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+/* Rounded corners */
+.rounded-lg {
+  border-radius: var(--radius);
+}
+.rounded-md {
+  border-radius: calc(var(--radius) - 2px);
+}
+.rounded-sm {
+  border-radius: calc(var(--radius) - 4px);
+}
+
+/* Transition utilities */
+.transition-fast {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted-foreground));
+}
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 2px;
+}
+
+/* Badges & CTA styling for hero section */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+}
+.bg-white\/20 {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.text-white {
+  color: white;
+}
+.border-white\/30 {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Button hover variants */
+.hover\:bg-white\/20:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Card overrides for stats section */
 .card {
+  background-color: var(--background);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-
-@layer base {
-  :root {
-    /* Core Brand Colors */
-    --background: 0 0% 100%;
-    --foreground: 222 84% 5%;
-
-    /* Brand Primary - Educational Blue */
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
-    --primary-hover: 217 91% 55%;
-    --primary-light: 217 91% 90%;
-
-    /* Success - Ethiopian Green */
-    --success: 142 69% 58%;
-    --success-foreground: 0 0% 100%;
-    --success-light: 142 69% 95%;
-
-    /* Warning - Golden Yellow */
-    --warning: 45 93% 58%;
-    --warning-foreground: 222 84% 5%;
-    --warning-light: 45 93% 95%;
-
-    /* Ethiopian Flag Accent */
-    --accent-red: 0 84% 60%;
-    --accent-yellow: 45 93% 58%;
-    --accent-green: 142 69% 58%;
-
-    /* UI Colors */
-    --card: 0 0% 100%;
-    --card-foreground: 222 84% 5%;
-    --card-hover: 217 91% 98%;
-
-    --secondary: 217 32% 96%;
-    --secondary-foreground: 222 84% 15%;
-    --secondary-hover: 217 32% 92%;
-
-    --muted: 217 32% 96%;
-    --muted-foreground: 217 13% 50%;
-
-    --border: 217 32% 89%;
-    --input: 217 32% 89%;
-    --ring: 217 91% 60%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    /* Certificate Colors */
-    --certificate-bg: 217 91% 98%;
-    --certificate-border: 217 91% 60%;
-    --certificate-seal: 45 93% 58%;
-
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-success: linear-gradient(135deg, hsl(142 69% 58%), hsl(142 69% 68%));
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(142 69% 58%) 100%);
-    --gradient-certificate: linear-gradient(135deg, hsl(217 91% 98%) 0%, hsl(45 93% 98%) 100%);
-
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(217 91% 60% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(217 91% 60% / 0.1), 0 2px 4px -2px hsl(217 91% 60% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(217 91% 60% / 0.1), 0 4px 6px -4px hsl(217 91% 60% / 0.1);
-    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
-
-    /* Typography */
-    --radius: 0.5rem;
-    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
-
-    /* Animations */
-    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .dark {
-    --background: 222 84% 5%;
-    --foreground: 217 32% 96%;
-
-    --primary: 217 91% 65%;
-    --primary-foreground: 222 84% 5%;
-    --primary-hover: 217 91% 70%;
-    --primary-light: 217 91% 15%;
-
-    --success: 142 69% 63%;
-    --success-foreground: 222 84% 5%;
-    --success-light: 142 69% 15%;
-
-    --card: 222 84% 8%;
-    --card-foreground: 217 32% 96%;
-    --card-hover: 222 84% 10%;
-
-    --secondary: 222 84% 12%;
-    --secondary-foreground: 217 32% 90%;
-    --secondary-hover: 222 84% 15%;
-
-    --muted: 222 84% 12%;
-    --muted-foreground: 217 32% 65%;
-
-    --border: 222 84% 15%;
-    --input: 222 84% 15%;
-    --ring: 217 91% 65%;
-
-    --certificate-bg: 222 84% 8%;
-    --certificate-border: 217 91% 65%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border transition-all;
-  }
-
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
-  }
-
-  /* Mobile-first typography */
-  .heading-xl { @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight; }
-  .heading-lg { @apply text-2xl md:text-3xl font-bold tracking-tight; }
-  .heading-md { @apply text-xl md:text-2xl font-semibold; }
-  .heading-sm { @apply text-lg font-semibold; }
-  
-  .body-lg { @apply text-base md:text-lg; }
-  .body-sm { @apply text-sm; }
-  .caption { @apply text-xs text-muted-foreground; }
-
-  /* Ethiopian flag pattern */
-  .flag-pattern {
-    background: linear-gradient(to right, 
-      hsl(var(--accent-green)) 0%, 
-      hsl(var(--accent-green)) 33%, 
-      hsl(var(--accent-yellow)) 33%, 
-      hsl(var(--accent-yellow)) 66%, 
-      hsl(var(--accent-red)) 66%
-    );
-    height: 4px;
-  }
-
-  /* Mobile-optimized scrollbars */
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: hsl(var(--muted));
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary));
-    border-radius: 2px;
-  }
-
-  /* Focus styles for accessibility */
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
-  }
-}
