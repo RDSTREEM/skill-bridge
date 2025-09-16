@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MobileNav, DesktopNav } from "@/components/ui/navigation";
 import { ChallengeCard } from "@/components/challenge-card";
 import { 
   BookOpen, 
@@ -62,8 +61,7 @@ const stats = [
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
-      <MobileNav />
-      <DesktopNav />
+
       
       <main className="pb-16 md:pb-8">
         {/* Hero Section */}
