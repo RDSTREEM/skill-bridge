@@ -1,7 +1,7 @@
 'use client';
 import { useAuth } from '@/lib/auth-context';
 import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot, orderBy, doc, getDoc } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, orderBy, getDocs } from 'firebase/firestore';
 import Link from 'next/link';
 import { getUserProfile } from '@/services/userService';
 import type { UserProfile } from '@/types/user';
@@ -12,7 +12,7 @@ interface Certificate { id: string; userId: string; challengeId: string; url: st
 
 import { Navbar } from '@/components/Navbar';
 import { Badge } from '@/components/ui/badge';
-import { Award, User, Users, FileText, CheckCircle, XCircle } from 'lucide-react';
+import { Award, User, Users, FileText } from 'lucide-react';
 
 export default function Dashboard() {
 	const { user } = useAuth();
@@ -51,44 +51,83 @@ export default function Dashboard() {
 }
  
 
-function StudentDashboard({ user }: { user: any }) {
+// ...existing code...
+
+type ChallengeDoc = {
+	id: string;
+	title: string;
+	applicantsStatus?: Record<string, string>;
+};
+function StudentDashboard({ user }: { user: { uid: string } }) {
+	const [activeChallenges, setActiveChallenges] = useState<ChallengeDoc[]>([]);
 	const [subs, setSubs] = useState<Submission[]>([]);
 	const [certs, setCerts] = useState<Certificate[]>([]);
 
 	useEffect(() => {
 		if (!user) return;
+		// Fetch all challenges where applicantsStatus[user.uid] === 'accepted' or 'completed'
+			async function fetchActiveChallenges() {
+				const q = query(collection(db, 'challenges'));
+				const snap = await getDocs(q);
+						const challenges: ChallengeDoc[] = snap.docs.map(d => {
+							const data = d.data() as Omit<ChallengeDoc, 'id'>;
+							return { ...data, id: d.id };
+						});
+				const filtered = challenges.filter((c) => {
+					const status = c.applicantsStatus?.[user.uid];
+					return status === 'accepted' || status === 'completed';
+				});
+				setActiveChallenges(filtered);
+			}
+		fetchActiveChallenges();
+		// Submissions and certificates for feedback, file links, etc.
 		const q1 = query(collection(db, 'submissions'), where('userId', '==', user.uid), orderBy('createdAt','desc'));
-		const unsub1 = onSnapshot(q1, snap => setSubs(snap.docs.map(d=>({ id: d.id, ...(d.data() as any) }))));
-		const q2 = query(collection(db, 'certificates'), where('userId', '==', user.uid), orderBy('createdAt','desc'));
-		const unsub2 = onSnapshot(q2, snap => setCerts(snap.docs.map(d=>({ id: d.id, ...(d.data() as any) }))));
+			const unsub1 = onSnapshot(q1, snap => setSubs(snap.docs.map(d => {
+				const data = d.data() as Omit<Submission, 'id'>;
+				return { ...data, id: d.id };
+			})));
+			const q2 = query(collection(db, 'certificates'), where('userId', '==', user.uid), orderBy('createdAt','desc'));
+			const unsub2 = onSnapshot(q2, snap => setCerts(snap.docs.map(d => {
+				const data = d.data() as Omit<Certificate, 'id'>;
+				return { ...data, id: d.id };
+			})));
 		return () => { unsub1(); unsub2(); };
 	}, [user]);
 
 		return (
 			<>
 				<section>
-					<h2 className="text-xl font-bold mb-4 flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Your Submissions</h2>
+					<h2 className="text-xl font-bold mb-4 flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Active Challenges</h2>
 					<div className="mt-4 grid md:grid-cols-2 gap-5">
-						{subs.length === 0 && <p className="text-sm text-gray-500 col-span-2">No submissions yet. Browse <Link className="underline" href="/challenges">challenges</Link>.</p>}
-						{subs.map(s => (
-										<div key={s.id} className={`rounded-2xl border shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all ${s.status === 'completed' ? 'bg-gradient-to-r from-green-100 to-blue-50 border-green-400' : 'bg-white'}`}>
-											<div className="flex items-center gap-2 mb-1">
-												<span className="font-medium">Challenge:</span>
-												<Link href={`/challenges/${s.challengeId}`} className="underline text-primary font-semibold">{s.challengeId}</Link>
-											</div>
-											<div className="flex items-center gap-2">
-												<span className="text-sm">Status:</span>
-												<Badge variant={s.status === 'accepted' ? 'success' : s.status === 'rejected' ? 'destructive' : s.status === 'completed' ? 'success' : 'secondary'}>
-													{s.status}
-												</Badge>
-											</div>
-											{s.status === 'completed' && (
-												<Link href={`/certificates/challenge/challenge-${s.challengeId}-${user.uid}`} className="mt-2 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg font-semibold text-center shadow hover:from-green-600 hover:to-blue-600 transition-all">View Completion Certificate</Link>
-											)}
-											{s.feedback && <p className="text-sm text-muted-foreground">Feedback: {s.feedback}</p>}
-											{s.latestFileUrl && <a className="text-sm underline text-blue-600" href={s.latestFileUrl} target="_blank">View latest upload</a>}
-										</div>
-						))}
+						{activeChallenges.length === 0 && <p className="text-sm text-gray-500 col-span-2">No active challenges. Browse <Link className="underline" href="/challenges">challenges</Link>.</p>}
+						{activeChallenges.map(c => {
+							const sub = subs.find(s => s.challengeId === c.id);
+							const status = c.applicantsStatus?.[user.uid] || sub?.status || 'accepted';
+							// Only allow allowed badge variants
+							const badgeVariant = (status === 'accepted' || status === 'completed') ? 'default' : 'secondary';
+							return (
+								<div key={c.id} className={`rounded-2xl border shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all ${status === 'completed' ? 'bg-gradient-to-r from-green-100 to-blue-50 border-green-400' : 'bg-white'}`}>
+									<div className="flex items-center gap-2 mb-1">
+										<span className="font-medium">Challenge:</span>
+										<Link href={`/challenges/${c.id}`} className="underline text-primary font-semibold">{c.title}</Link>
+									</div>
+									<div className="flex items-center gap-2">
+										<span className="text-sm">Status:</span>
+										<Badge variant={badgeVariant}>
+											{status}
+										</Badge>
+									</div>
+									{status === 'accepted' && (
+										<Link href={`/dashboard/challenges/${c.id}/submit`} className="mt-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-lg font-semibold text-center shadow hover:from-blue-600 hover:to-green-600 transition-all">Submit</Link>
+									)}
+									{status === 'completed' && (
+										<Link href={`/certificates/challenge/challenge-${c.id}-${user.uid}`} className="mt-2 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg font-semibold text-center shadow hover:from-green-600 hover:to-blue-600 transition-all">View Completion Certificate</Link>
+									)}
+									{sub?.feedback && <p className="text-sm text-muted-foreground">Feedback: {sub.feedback}</p>}
+									{sub?.latestFileUrl && <a className="text-sm underline text-blue-600" href={sub.latestFileUrl} target="_blank">View latest upload</a>}
+								</div>
+							);
+						})}
 					</div>
 				</section>
 				<section>
@@ -96,13 +135,13 @@ function StudentDashboard({ user }: { user: any }) {
 					<div className="mt-4 grid md:grid-cols-2 gap-5">
 						{certs.length === 0 && <p className="text-sm text-gray-500 col-span-2">No certificates yet.</p>}
 						{certs.map(c => (
-										<div key={c.id} className="rounded-2xl border bg-gradient-to-r from-yellow-100 to-yellow-50 shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all">
-											<div className="flex items-center gap-2 mb-1">
-												<span className="font-medium">Challenge:</span>
-												<Link href={`/challenges/${c.challengeId}`} className="underline text-primary font-semibold">{c.challengeId}</Link>
-											</div>
-											<Link className="text-sm underline text-blue-600 font-semibold" href={`/certificates/${c.id}`}>View Certificate</Link>
-										</div>
+							<div key={c.id} className="rounded-2xl border bg-gradient-to-r from-yellow-100 to-yellow-50 shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all">
+								<div className="flex items-center gap-2 mb-1">
+									<span className="font-medium">Challenge:</span>
+									<Link href={`/challenges/${c.challengeId}`} className="underline text-primary font-semibold">{c.challengeId}</Link>
+								</div>
+								<Link className="text-sm underline text-blue-600 font-semibold" href={`/certificates/${c.id}`}>View Certificate</Link>
+							</div>
 						))}
 					</div>
 				</section>
@@ -114,7 +153,7 @@ import MentorChallengeForm from '@/components/MentorChallengeForm';
 import { useEffect, useState } from 'react';
 import { getMentorChallenges } from '@/services/challengeService';
 import type { Challenge } from '@/types/challenge';
-import ApplicantReview from '@/components/ApplicantReview';
+
 
 function MentorDashboard({ user }: { user: any }) {
 		const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -157,20 +196,26 @@ function MentorDashboard({ user }: { user: any }) {
 									<div className="flex items-center gap-2 text-xs text-gray-500">
 										<Users className="h-4 w-4" /> Applicants: {c.applicants?.length || 0}
 									</div>
-									<div className="flex gap-2 mt-2">
-										<a
-											href={`/dashboard/challenges/${c.id}/applicants`}
-											className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-center"
-										>
-											View Applicants
-										</a>
-										<button
-											onClick={() => handleDelete(c.id!)}
-											className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-										>
-											Delete
-										</button>
-									</div>
+														<div className="flex gap-2 mt-2">
+															<a
+																href={`/dashboard/challenges/${c.id}/applicants`}
+																className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-center"
+															>
+																View Applicants
+															</a>
+															<a
+																href={`/dashboard/challenges/${c.id}/submissions`}
+																className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-center"
+															>
+																Submissions
+															</a>
+															<button
+																onClick={() => handleDelete(c.id!)}
+																className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+															>
+																Delete
+															</button>
+														</div>
 								</div>
 							))}
 						</div>

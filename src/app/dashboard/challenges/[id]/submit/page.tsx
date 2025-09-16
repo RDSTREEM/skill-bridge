@@ -1,13 +1,16 @@
 "use client";
 import { useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 export default function ChallengeSubmitPage({ params }: { params: { id: string } }) {
   const challengeId = params.id;
   const router = useRouter();
   const searchParams = useSearchParams();
-  const studentId = searchParams.get('studentId');
+  const { user } = useAuth();
+  // Prefer logged-in user ID, fallback to query param
+  const studentId = user?.uid || searchParams.get('studentId');
   const [evidence, setEvidence] = useState('');
   const [links, setLinks] = useState(['']);
   const [loading, setLoading] = useState(false);
@@ -33,7 +36,7 @@ export default function ChallengeSubmitPage({ params }: { params: { id: string }
         const data = await res.json();
         setError(data.error || 'Submission failed');
       } else {
-        router.push(`/dashboard/challenges/${challengeId}/applicants/${studentId}`);
+        router.push(`/dashboard/challenges/${challengeId}/submit/success`);
       }
     } catch (e: any) {
       setError(e.message || 'Submission failed');
