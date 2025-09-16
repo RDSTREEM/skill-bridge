@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader } from "@/components/ui/Card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChallengeCard } from "@/components/challenge-card";
-import { 
-  BookOpen, 
-  Users, 
-  Award, 
-  TrendingUp, 
+import {
+  BookOpen,
+  Users,
+  Award,
+  TrendingUp,
   ArrowRight,
   Target,
   Globe,
-  Zap
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -20,7 +20,8 @@ const featuredChallenges = [
     id: "1",
     slug: "web-development-basics",
     title: "Web Development Fundamentals",
-    shortDescription: "Learn HTML, CSS, and JavaScript basics by building a responsive personal portfolio website.",
+    shortDescription:
+      "Learn HTML, CSS, and JavaScript basics by building a responsive personal portfolio website.",
     difficulty: "Beginner" as const,
     estimatedHours: 8,
     tags: ["HTML", "CSS", "JavaScript", "Portfolio"],
@@ -28,10 +29,11 @@ const featuredChallenges = [
     enrolledCount: 234,
   },
   {
-    id: "2", 
+    id: "2",
     slug: "digital-marketing-campaign",
     title: "Digital Marketing Campaign Design",
-    shortDescription: "Create a complete social media marketing strategy for a local Ethiopian business.",
+    shortDescription:
+      "Create a complete social media marketing strategy for a local Ethiopian business.",
     difficulty: "Intermediate" as const,
     estimatedHours: 12,
     tags: ["Marketing", "Social Media", "Analytics", "Strategy"],
@@ -42,7 +44,8 @@ const featuredChallenges = [
     id: "3",
     slug: "mobile-app-ui-design",
     title: "Mobile App UI/UX Design",
-    shortDescription: "Design a mobile application interface following modern UX principles and accessibility guidelines.",
+    shortDescription:
+      "Design a mobile application interface following modern UX principles and accessibility guidelines.",
     difficulty: "Intermediate" as const,
     estimatedHours: 15,
     tags: ["UI/UX", "Figma", "Mobile Design", "Accessibility"],
@@ -61,28 +64,32 @@ const stats = [
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
-
-      
       <main className="pb-16 md:pb-8">
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-hero">
           <div className="container mx-auto px-4 py-16 md:py-24">
             <div className="text-center text-white">
-              <Badge className="mb-6 bg-white/20 text-white border-white/30" variant="outline">
+              <Badge
+                className="mb-6 bg-white/20 text-white border-white/30"
+                variant="outline"
+              >
                 <Globe className="h-4 w-4 mr-2" />
                 Empowering Ethiopian Students
               </Badge>
-              
+
               <h1 className="heading-xl mb-6 max-w-4xl mx-auto">
                 Bridge the Gap Between
-                <span className="block text-accent-yellow">Education & Industry</span>
+                <span className="block text-accent-yellow">
+                  Education & Industry
+                </span>
               </h1>
-              
+
               <p className="body-lg mb-8 max-w-2xl mx-auto opacity-90">
-                Complete real-world skill challenges, get mentored by industry experts, 
-                and earn verified certificates that showcase your capabilities.
+                Complete real-world skill challenges, get mentored by industry
+                experts, and earn verified certificates that showcase your
+                capabilities.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" asChild>
                   <Link href="/challenges">
@@ -90,7 +97,12 @@ const Index = () => {
                     Browse Challenges
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20" asChild>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  asChild
+                >
                   <Link href="/login">
                     Get Started Free
                     <ArrowRight className="h-5 w-5 ml-2" />
@@ -115,8 +127,12 @@ const Index = () => {
                           <Icon className="h-6 w-6 text-primary" />
                         </div>
                       </div>
-                      <div className="heading-md text-foreground mb-1">{stat.value}</div>
-                      <div className="body-sm text-muted-foreground">{stat.label}</div>
+                      <div className="heading-md text-foreground mb-1">
+                        {stat.value}
+                      </div>
+                      <div className="body-sm text-muted-foreground">
+                        {stat.label}
+                      </div>
                     </CardContent>
                   </Card>
                 );
@@ -131,7 +147,8 @@ const Index = () => {
             <div className="text-center mb-12">
               <h2 className="heading-lg mb-4">How Skill Bridge Works</h2>
               <p className="body-lg text-muted-foreground max-w-2xl mx-auto">
-                A simple 4-step process to develop real-world skills and advance your career
+                A simple 4-step process to develop real-world skills and advance
+                your career
               </p>
             </div>
 
@@ -140,25 +157,29 @@ const Index = () => {
                 {
                   step: "1",
                   title: "Choose Challenge",
-                  description: "Browse curated skill challenges aligned with industry needs",
+                  description:
+                    "Browse curated skill challenges aligned with industry needs",
                   icon: Target,
                 },
                 {
-                  step: "2", 
+                  step: "2",
                   title: "Complete Project",
-                  description: "Work on real-world projects with clear deliverables and deadlines",
+                  description:
+                    "Work on real-world projects with clear deliverables and deadlines",
                   icon: Zap,
                 },
                 {
                   step: "3",
                   title: "Get Reviewed",
-                  description: "Receive detailed feedback from industry mentors and experts",
+                  description:
+                    "Receive detailed feedback from industry mentors and experts",
                   icon: Users,
                 },
                 {
                   step: "4",
                   title: "Earn Certificate",
-                  description: "Receive verified digital certificates to showcase your skills",
+                  description:
+                    "Receive verified digital certificates to showcase your skills",
                   icon: Award,
                 },
               ].map((item) => {
@@ -170,11 +191,15 @@ const Index = () => {
                         <Icon className="h-8 w-8 text-white" />
                       </div>
                       <div className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-accent-yellow flex items-center justify-center">
-                        <span className="text-xs font-bold text-foreground">{item.step}</span>
+                        <span className="text-xs font-bold text-foreground">
+                          {item.step}
+                        </span>
                       </div>
                     </div>
                     <h3 className="heading-sm mb-2">{item.title}</h3>
-                    <p className="body-sm text-muted-foreground">{item.description}</p>
+                    <p className="body-sm text-muted-foreground">
+                      {item.description}
+                    </p>
                   </div>
                 );
               })}
@@ -221,12 +246,11 @@ const Index = () => {
         <section className="py-16 md:py-24 bg-gradient-primary">
           <div className="container mx-auto px-4 text-center">
             <div className="max-w-3xl mx-auto text-white">
-              <h2 className="heading-xl mb-6">
-                Ready to Build Your Future?
-              </h2>
+              <h2 className="heading-xl mb-6">Ready to Build Your Future?</h2>
               <p className="body-lg mb-8 opacity-90">
-                Join thousands of Ethiopian students who are developing industry-ready skills 
-                and advancing their careers with Skill Bridge.
+                Join thousands of Ethiopian students who are developing
+                industry-ready skills and advancing their careers with Skill
+                Bridge.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary">
@@ -235,7 +259,11 @@ const Index = () => {
                     <ArrowRight className="h-5 w-5 ml-2" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                >
                   <Link href="/challenges" className="flex items-center">
                     Explore Challenges
                   </Link>
