@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { ChallengeCard } from "@/components/challenge-card";
 import { 
@@ -91,7 +91,7 @@ const Index = () => {
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20" asChild>
-                  <Link href="/auth/signup">
+                  <Link href="/login">
                     Get Started Free
                     <ArrowRight className="h-5 w-5 ml-2" />
                   </Link>
@@ -230,7 +230,7 @@ const Index = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary">
-                  <Link href="/auth/signup" className="flex items-center">
+                  <Link href="/login" className="flex items-center">
                     Create Free Account
                     <ArrowRight className="h-5 w-5 ml-2" />
                   </Link>

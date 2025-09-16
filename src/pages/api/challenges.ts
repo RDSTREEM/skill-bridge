@@ -23,7 +23,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
   try {
-    const { title, description, imageUrl, mentorId } = req.body;
+    const {
+      title,
+      description,
+      imageUrl,
+      mentorId,
+      acceptEmail,
+      rejectEmail,
+      submissionStart,
+      submissionDeadline,
+      telegram,
+      faq
+    } = req.body;
     if (!title || !description || !imageUrl || !mentorId) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
@@ -32,6 +43,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       description,
       imageUrl,
       mentorId,
+      acceptEmail: acceptEmail || '',
+      rejectEmail: rejectEmail || '',
+      submissionStart: submissionStart || null,
+      submissionDeadline: submissionDeadline || null,
+      telegram: telegram || '',
+      faq: faq || [],
     };
     const docRef = await db.collection('challenges').add({
       ...challenge,

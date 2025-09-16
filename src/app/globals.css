@@ -215,5 +215,5 @@
   background-color: var(--background);
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  padding: 1rem;
-}
+  padding: 2em;
+  }

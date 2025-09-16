@@ -18,17 +18,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
   try {
-    const { name } = req.query;
-    if (!name) return res.status(400).json({ error: 'Missing challenge name' });
-    const snap = await db.collection('challenges').where('title', '==', name).get();
-    if (snap.empty) return res.status(404).json({ error: 'Challenge not found' });
-    const challenge = snap.docs[0].data();
+    const { name, id } = req.query;
+    let challengeDoc = null;
+    if (id) {
+      const docSnap = await db.collection('challenges').doc(id as string).get();
+      if (!docSnap.exists) return res.status(404).json({ error: 'Challenge not found' });
+      challengeDoc = docSnap.data();
+    } else if (name) {
+      const snap = await db.collection('challenges').where('title', '==', name).get();
+      if (snap.empty) return res.status(404).json({ error: 'Challenge not found' });
+      challengeDoc = snap.docs[0].data();
+    } else {
+      return res.status(400).json({ error: 'Missing challenge id or name' });
+    }
     res.status(200).json({
-      title: challenge.title,
-      submissionDeadline: challenge.submissionDeadline,
-      rules: challenge.description,
-      prizes: challenge.prizes || '',
-      faq: challenge.faq || [],
+      title: challengeDoc.title,
+      submissionDeadline: challengeDoc.submissionDeadline,
+      rules: challengeDoc.description,
+      prizes: challengeDoc.prizes || '',
+      faq: challengeDoc.faq || [],
     });
   } catch (error: any) {
     return res.status(500).json({ error: error.message });

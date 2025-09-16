@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { sendDecisionEmail } from '@/services/emailService';
+// Increment challengesAccepted in certificate if accepted
 import fs from 'fs';
 
 if (!getApps().length) {
@@ -41,10 +42,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await db.collection('challenges').doc(challengeId as string).update({
       [`applicantsStatus.${studentId}`]: decision,
     });
+    if (decision === 'accepted') {
+      const certRef = db.collection('certificates').doc(`main-${studentId}`);
+      const certSnap = await certRef.get();
+      if (certSnap.exists) {
+        const prev = certSnap.data()?.challengesAccepted || 0;
+        await certRef.update({ challengesAccepted: prev + 1 });
+      }
+    }
     // Send email
     let customText = undefined;
-    if (decision === 'accepted' && challenge.acceptEmail) {
-      customText = challenge.acceptEmail;
+    if (decision === 'accepted') {
+      if (challenge.acceptEmail) {
+        customText = challenge.acceptEmail;
+      } else {
+        customText = `Congratulations! You have been accepted to the challenge: ${challenge.title}.`;
+      }
+      if (challenge.telegram) {
+        customText += `\n\nJoin the challenge group here: ${challenge.telegram}`;
+      }
     } else if (decision === 'rejected' && challenge.rejectEmail) {
       customText = challenge.rejectEmail;
     }

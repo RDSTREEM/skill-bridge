@@ -3,7 +3,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 
 export default function ApplicantEssayPage({ params }: { params: { id: string; studentId: string } }) {
@@ -72,10 +72,8 @@ export default function ApplicantEssayPage({ params }: { params: { id: string; s
     setError(null);
     startTransition(async () => {
       try {
-        const res = await fetch(`/api/challenges/${challengeId}/mark-complete`, {
+        const res = await fetch(`/api/challenges/${challengeId}/mark-complete?studentId=${studentId}`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ studentId }),
         });
         if (!res.ok) {
           const data = await res.json();

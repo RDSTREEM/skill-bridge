@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { useAuth } from "@/lib/auth-context";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Navbar } from "@/components/Navbar";
 
 export default function ChallengeDetailPage() {

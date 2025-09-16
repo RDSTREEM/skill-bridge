@@ -1,0 +1,55 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" rx="32" fill="#fdfdfd" stroke="#E0E0E0" stroke-width="2"/>
+
+  <!-- Logo in Top-Left Corner -->
+  <g transform="translate(40,40) scale(2)">
+    <path d="M20 60 L40 30 L60 60" stroke="url(#gradient)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="20" cy="60" r="3" fill="url(#gradient)"/>
+    <circle cx="60" cy="60" r="3" fill="url(#gradient)"/>
+    <text x="80" y="55" font-family="Montserrat, sans-serif" font-size="24" font-weight="700" fill="url(#gradient)">
+      SkillBridge
+    </text>
+  </g>
+
+  <!-- Decorative Top Curve -->
+  <path d="M50 150 C200 50, 600 50, 750 150" stroke="url(#gradient)" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- Certificate Title (Now Portfolio) -->
+  <text x="400" y="200" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="46" font-weight="800" fill="#4C6EF5" letter-spacing="1.5">
+    Portfolio
+  </text>
+
+  <!-- Recipient Name -->
+  <text id="recipientName" x="400" y="280" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="38" font-weight="700" fill="#222">
+    {{name}}
+  </text>
+
+  <!-- Extra Info -->
+  <text id="extraInfo" x="400" y="330" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="22" fill="#555" font-style="italic">
+    {{extra}}
+  </text>
+
+  <!-- Stats Box -->
+  <rect x="150" y="370" width="500" height="180" rx="24" fill="#F7F9FF" stroke="#D0D5FF" stroke-width="2" filter="url(#shadow)"/>
+  <g font-family="Montserrat, sans-serif" font-size="18" fill="#4C6EF5" font-weight="600">
+    <text x="200" y="410">Status: <tspan fill="#9B5DE5">{{status}}</tspan></text>
+    <text x="200" y="450">Challenges Applied: <tspan fill="#9B5DE5">{{applied}}</tspan></text>
+    <text x="200" y="490">Challenges Accepted: <tspan fill="#9B5DE5">{{accepted}}</tspan></text>
+    <text x="200" y="530">Challenges Completed: <tspan fill="#9B5DE5">{{completed}}</tspan></text>
+  </g>
+
+  <!-- Bottom Gradient Line -->
+  <line x1="100" y1="580" x2="700" y2="580" stroke="url(#gradient)" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Shadow Filter -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4C6EF5"/>
+      <stop offset="100%" stop-color="#9B5DE5"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#888" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+</svg>
