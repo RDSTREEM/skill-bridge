@@ -59,27 +59,23 @@ type ChallengeDoc = {
 	applicantsStatus?: Record<string, string>;
 };
 function StudentDashboard({ user }: { user: { uid: string } }) {
-	const [activeChallenges, setActiveChallenges] = useState<ChallengeDoc[]>([]);
+		const [allChallenges, setAllChallenges] = useState<ChallengeDoc[]>([]);
 	const [subs, setSubs] = useState<Submission[]>([]);
 	const [certs, setCerts] = useState<Certificate[]>([]);
 
 	useEffect(() => {
 		if (!user) return;
-		// Fetch all challenges where applicantsStatus[user.uid] === 'accepted' or 'completed'
-			async function fetchActiveChallenges() {
+			// Fetch all challenges
+			async function fetchAllChallenges() {
 				const q = query(collection(db, 'challenges'));
 				const snap = await getDocs(q);
-						const challenges: ChallengeDoc[] = snap.docs.map(d => {
-							const data = d.data() as Omit<ChallengeDoc, 'id'>;
-							return { ...data, id: d.id };
-						});
-				const filtered = challenges.filter((c) => {
-					const status = c.applicantsStatus?.[user.uid];
-					return status === 'accepted' || status === 'completed';
+				const challenges: ChallengeDoc[] = snap.docs.map(d => {
+					const data = d.data() as Omit<ChallengeDoc, 'id'>;
+					return { ...data, id: d.id };
 				});
-				setActiveChallenges(filtered);
+				setAllChallenges(challenges);
 			}
-		fetchActiveChallenges();
+			fetchAllChallenges();
 		// Submissions and certificates for feedback, file links, etc.
 		const q1 = query(collection(db, 'submissions'), where('userId', '==', user.uid), orderBy('createdAt','desc'));
 			const unsub1 = onSnapshot(q1, snap => setSubs(snap.docs.map(d => {
@@ -94,42 +90,82 @@ function StudentDashboard({ user }: { user: { uid: string } }) {
 		return () => { unsub1(); unsub2(); };
 	}, [user]);
 
-		return (
-			<>
-				<section>
-					<h2 className="text-xl font-bold mb-4 flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Active Challenges</h2>
-					<div className="mt-4 grid md:grid-cols-2 gap-5">
-						{activeChallenges.length === 0 && <p className="text-sm text-gray-500 col-span-2">No active challenges. Browse <Link className="underline" href="/challenges">challenges</Link>.</p>}
-						{activeChallenges.map(c => {
-							const sub = subs.find(s => s.challengeId === c.id);
-							const status = c.applicantsStatus?.[user.uid] || sub?.status || 'accepted';
-							// Only allow allowed badge variants
-							const badgeVariant = (status === 'accepted' || status === 'completed') ? 'default' : 'secondary';
-							return (
-								<div key={c.id} className={`rounded-2xl border shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all ${status === 'completed' ? 'bg-gradient-to-r from-green-100 to-blue-50 border-green-400' : 'bg-white'}`}>
-									<div className="flex items-center gap-2 mb-1">
-										<span className="font-medium">Challenge:</span>
-										<Link href={`/challenges/${c.id}`} className="underline text-primary font-semibold">{c.title}</Link>
+			// Show all submitted/completed challenges, using allChallenges for title lookup
+			const submittedChallenges = subs
+				.filter(sub => sub.status === 'submitted' || sub.status === 'completed')
+				.map(sub => {
+					return allChallenges.find(c => c.id === sub.challengeId) || { id: sub.challengeId, title: 'Challenge', applicantsStatus: {} };
+				});
+			// Only show as active if accepted/completed and not submitted/completed
+			const activeChallenges = allChallenges.filter(c => {
+				const status = c.applicantsStatus?.[user.uid];
+				if (!(status === 'accepted' || status === 'completed')) return false;
+				const sub = subs.find(s => s.challengeId === c.id);
+				return !sub || (sub.status !== 'submitted' && sub.status !== 'completed');
+			});
+
+			return (
+				<>
+					<section>
+						<h2 className="text-xl font-bold mb-4 flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Active Challenges</h2>
+						<div className="mt-4 grid md:grid-cols-2 gap-5">
+										{activeChallenges.length === 0 && <p className="text-sm text-gray-500 col-span-2">No active challenges. Browse <Link className="underline" href="/challenges">challenges</Link>.</p>}
+										{activeChallenges.map(c => {
+											const sub = subs.find(s => s.challengeId === c.id);
+											const status = c.applicantsStatus?.[user.uid] || sub?.status || 'accepted';
+											const badgeVariant = (status === 'accepted' || status === 'completed') ? 'default' : 'secondary';
+											return (
+												<div key={c.id} className={`rounded-2xl border shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all ${status === 'completed' ? 'bg-gradient-to-r from-green-100 to-blue-50 border-green-400' : 'bg-white'}`}>
+													<div className="flex items-center gap-2 mb-1">
+														<span className="font-medium">Challenge:</span>
+														<Link href={`/challenges/${c.id}`} className="underline text-primary font-semibold">{c.title}</Link>
+													</div>
+													<div className="flex items-center gap-2">
+														<span className="text-sm">Status:</span>
+														<Badge variant={badgeVariant}>
+															{status}
+														</Badge>
+													</div>
+													<Link href={`/dashboard/challenges/${c.id}/submit`} className="mt-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-lg font-semibold text-center shadow hover:from-blue-600 hover:to-green-600 transition-all">
+														Submit
+													</Link>
+													{sub?.feedback && <p className="text-sm text-muted-foreground">Feedback: {sub.feedback}</p>}
+													{sub?.latestFileUrl && <a className="text-sm underline text-blue-600" href={sub.latestFileUrl} target="_blank">View latest upload</a>}
+												</div>
+											);
+										})}
+						</div>
+					</section>
+					<section>
+						<h2 className="text-xl font-bold mb-4 flex items-center gap-2"><FileText className="h-5 w-5 text-primary" /> Submitted Challenges</h2>
+						<div className="mt-4 grid md:grid-cols-2 gap-5">
+							{submittedChallenges.length === 0 && <p className="text-sm text-gray-500 col-span-2">No submitted challenges yet.</p>}
+							{submittedChallenges.map(c => {
+								const sub = subs.find(s => s.challengeId === c.id);
+								const status = c.applicantsStatus?.[user.uid] || sub?.status || 'submitted';
+								const badgeVariant = status === 'submitted' ? 'default' : 'secondary';
+								return (
+									<div key={c.id} className="rounded-2xl border shadow-md p-5 flex flex-col gap-2 hover:shadow-lg transition-all bg-gradient-to-r from-blue-100 to-green-50 border-blue-400">
+										<div className="flex items-center gap-2 mb-1">
+											<span className="font-medium">Challenge:</span>
+											<Link href={`/challenges/${c.id}`} className="underline text-primary font-semibold">{c.title}</Link>
+										</div>
+										<div className="flex items-center gap-2">
+											<span className="text-sm">Status:</span>
+											<Badge variant={badgeVariant}>
+												{status}
+											</Badge>
+										</div>
+										<Link href={`/dashboard/challenges/${c.id}/submit`} className="mt-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-lg font-semibold text-center shadow hover:from-blue-600 hover:to-green-600 transition-all">
+											Update
+										</Link>
+										{sub?.feedback && <p className="text-sm text-muted-foreground">Feedback: {sub.feedback}</p>}
+										{sub?.latestFileUrl && <a className="text-sm underline text-blue-600" href={sub.latestFileUrl} target="_blank">View latest upload</a>}
 									</div>
-									<div className="flex items-center gap-2">
-										<span className="text-sm">Status:</span>
-										<Badge variant={badgeVariant}>
-											{status}
-										</Badge>
-									</div>
-									{status === 'accepted' && (
-										<Link href={`/dashboard/challenges/${c.id}/submit`} className="mt-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-lg font-semibold text-center shadow hover:from-blue-600 hover:to-green-600 transition-all">Submit</Link>
-									)}
-									{status === 'completed' && (
-										<Link href={`/certificates/challenge/challenge-${c.id}-${user.uid}`} className="mt-2 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg font-semibold text-center shadow hover:from-green-600 hover:to-blue-600 transition-all">View Completion Certificate</Link>
-									)}
-									{sub?.feedback && <p className="text-sm text-muted-foreground">Feedback: {sub.feedback}</p>}
-									{sub?.latestFileUrl && <a className="text-sm underline text-blue-600" href={sub.latestFileUrl} target="_blank">View latest upload</a>}
-								</div>
-							);
-						})}
-					</div>
-				</section>
+								);
+							})}
+						</div>
+					</section>
 				<section>
 					<h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Award className="h-5 w-5 text-yellow-500" /> Certificates</h2>
 					<div className="mt-4 grid md:grid-cols-2 gap-5">
