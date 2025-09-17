@@ -60,12 +60,17 @@ export default function ChallengeSubmitPage({ params }: { params: { id: string }
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Links (optional)</label>
+          <label className="block font-medium mb-1">
+            Google Drive Links (required for files)
+          </label>
+          <p className="text-sm text-gray-600 mb-2">
+            Please upload all necessary files (code, documents, etc.) to Google Drive and paste the shareable link(s) below. Make sure the links are accessible.
+          </p>
           {links.map((link, i) => (
             <div key={i} className="flex gap-2 mb-2">
               <input
                 className="flex-1 border rounded px-3 py-2"
-                placeholder="https://..."
+                placeholder="Paste Google Drive link here"
                 value={link}
                 onChange={e => handleLinkChange(i, e.target.value)}
               />
