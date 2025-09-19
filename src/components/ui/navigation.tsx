@@ -1,16 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "./Button";
-import { 
-  Home, 
-  BookOpen, 
-  User, 
-  Award, 
-  Settings, 
-  Menu,
-  X 
-} from "lucide-react";
+import { Button } from "./button";
+import { Home, BookOpen, User, Award, Settings, Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
@@ -36,7 +28,7 @@ export function MobileNav() {
             </div>
             <span className="heading-sm text-foreground">Skill Bridge</span>
           </Link>
-          
+
           <Button
             variant="ghost"
             size="icon"
@@ -73,7 +65,7 @@ export function MobileNav() {
                 </Link>
               );
             })}
-            
+
             <div className="pt-4 border-t">
               <Link
                 href="/profile"
@@ -128,7 +120,9 @@ export function DesktopNav() {
             </div>
             <div>
               <div className="heading-md text-foreground">Skill Bridge</div>
-              <div className="text-xs text-muted-foreground">Micro-Internship Platform</div>
+              <div className="text-xs text-muted-foreground">
+                Micro-Internship Platform
+              </div>
             </div>
           </Link>
 
@@ -150,7 +144,7 @@ export function DesktopNav() {
                 </Link>
               );
             })}
-            
+
             <Button variant="outline" size="sm" asChild>
               <Link href="/profile">
                 <Settings className="h-4 w-4 mr-2" />
@@ -166,4 +160,3 @@ export function DesktopNav() {
     </header>
   );
 }
-

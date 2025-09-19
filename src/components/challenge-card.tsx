@@ -1,8 +1,15 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
+
 import { Trophy, ArrowRight } from "lucide-react";
-import Link from "next/link"
+import Link from "next/link";
 
 interface ChallengeCardProps {
   challenge: {
@@ -56,7 +63,9 @@ export function ChallengeCard({ challenge, variant = "default", showLoginNote = 
             </Badge>
             <h3 className="heading-sm line-clamp-2">{challenge.title}</h3>
             {challenge.organization && (
-              <p className="body-sm text-muted-foreground">{challenge.organization}</p>
+              <p className="body-sm text-muted-foreground">
+                {challenge.organization}
+              </p>
             )}
           </div>
           {variant === "completed" && (
