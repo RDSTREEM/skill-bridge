@@ -3,10 +3,10 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
+} from "@/components/ui/Card";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 import { Trophy, ArrowRight } from "lucide-react";
 import Link from "next/link";

@@ -167,7 +167,10 @@ function StudentDashboard({ user }: { user: { uid: string } }) {
 						</div>
 					</section>
 				<section>
-					<h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Award className="h-5 w-5 text-yellow-500" /> Certificates</h2>
+					<div className="flex items-center justify-between mb-4">
+						<h2 className="text-xl font-bold flex items-center gap-2"><Award className="h-5 w-5 text-yellow-500" /> Certificates</h2>
+						<Link href="/certificates" className="px-4 py-2 rounded-lg bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-semibold shadow hover:from-yellow-500 hover:to-yellow-700 transition-all">Your Certificates</Link>
+					</div>
 					<div className="mt-4 grid md:grid-cols-2 gap-5">
 						{certs.length === 0 && <p className="text-sm text-gray-500 col-span-2">No certificates yet.</p>}
 						{certs.map(c => (
