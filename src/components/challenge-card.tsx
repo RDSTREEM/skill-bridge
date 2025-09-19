@@ -1,8 +1,13 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Clock, Users, Trophy, ArrowRight } from "lucide-react";
-import Link from "next/link"
+import Link from "next/link";
 
 interface ChallengeCardProps {
   challenge: {
@@ -20,7 +25,10 @@ interface ChallengeCardProps {
   variant?: "default" | "enrolled" | "completed";
 }
 
-export function ChallengeCard({ challenge, variant = "default" }: ChallengeCardProps) {
+export function ChallengeCard({
+  challenge,
+  variant = "default",
+}: ChallengeCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Beginner":
@@ -55,7 +63,9 @@ export function ChallengeCard({ challenge, variant = "default" }: ChallengeCardP
             </Badge>
             <h3 className="heading-sm line-clamp-2">{challenge.title}</h3>
             {challenge.organization && (
-              <p className="body-sm text-muted-foreground">{challenge.organization}</p>
+              <p className="body-sm text-muted-foreground">
+                {challenge.organization}
+              </p>
             )}
           </div>
           {variant === "completed" && (
@@ -97,11 +107,21 @@ export function ChallengeCard({ challenge, variant = "default" }: ChallengeCardP
       </CardContent>
 
       <CardFooter className="pt-0">
-        <Button asChild className="w-full" variant={variant === "enrolled" ? "default" : "outline"}>
-          <Link href={`/challenges/${challenge.slug}`} className="flex items-center justify-center space-x-2">
+        <Button
+          asChild
+          className="w-full"
+          variant={variant === "enrolled" ? "default" : "outline"}
+        >
+          <Link
+            href={`/challenges/${challenge.slug}`}
+            className="flex items-center justify-center space-x-2"
+          >
             <span>
-              {variant === "completed" ? "View Results" : 
-               variant === "enrolled" ? "Continue" : "Start Challenge"}
+              {variant === "completed"
+                ? "View Results"
+                : variant === "enrolled"
+                  ? "Continue"
+                  : "Start Challenge"}
             </span>
             <ArrowRight className="h-4 w-4" />
           </Link>
