@@ -227,7 +227,7 @@ const Index = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredChallenges.map((challenge) => (
-                <ChallengeCard key={challenge.id} challenge={challenge} />
+                <ChallengeCard key={challenge.id} challenge={challenge} showLoginNote={true} />
               ))}
             </div>
 

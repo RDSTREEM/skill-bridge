@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/Button";
-import { Clock, Users, Trophy, ArrowRight } from "lucide-react";
+import { Trophy, ArrowRight } from "lucide-react";
 import Link from "next/link"
 
 interface ChallengeCardProps {
@@ -18,9 +18,10 @@ interface ChallengeCardProps {
     completedCount?: number;
   };
   variant?: "default" | "enrolled" | "completed";
+  showLoginNote?: boolean; // true for homepage, false for challenges section
 }
 
-export function ChallengeCard({ challenge, variant = "default" }: ChallengeCardProps) {
+export function ChallengeCard({ challenge, variant = "default", showLoginNote = false }: ChallengeCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Beginner":
@@ -69,19 +70,6 @@ export function ChallengeCard({ challenge, variant = "default" }: ChallengeCardP
           {challenge.shortDescription}
         </p>
 
-        <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-          <div className="flex items-center space-x-1">
-            <Clock className="h-4 w-4" />
-            <span>{challenge.estimatedHours}h</span>
-          </div>
-          {challenge.enrolledCount && (
-            <div className="flex items-center space-x-1">
-              <Users className="h-4 w-4" />
-              <span>{challenge.enrolledCount} enrolled</span>
-            </div>
-          )}
-        </div>
-
         <div className="flex flex-wrap gap-1">
           {challenge.tags.slice(0, 3).map((tag) => (
             <Badge key={tag} variant="secondary" className="text-xs">
@@ -96,16 +84,39 @@ export function ChallengeCard({ challenge, variant = "default" }: ChallengeCardP
         </div>
       </CardContent>
 
-      <CardFooter className="pt-0">
-        <Button asChild className="w-full" variant={variant === "enrolled" ? "default" : "outline"}>
-          <Link href={`/challenges/${challenge.slug}`} className="flex items-center justify-center space-x-2">
-            <span>
-              {variant === "completed" ? "View Results" : 
-               variant === "enrolled" ? "Continue" : "Start Challenge"}
-            </span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Button>
+      <CardFooter className="pt-0 flex flex-col gap-2">
+        {variant === "default" ? (
+          showLoginNote ? (
+            <>
+              <Button asChild className="w-full" variant="outline">
+                <Link href="/login" className="flex items-center justify-center space-x-2">
+                  <span>Login and Apply</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <p className="text-xs text-muted-foreground text-center mt-1">
+                After logging in, go to the <b>Challenges</b> section and search for this challenge to apply.
+              </p>
+            </>
+          ) : (
+            <Button asChild className="w-full" variant="outline">
+              <Link href={`/challenges/${challenge.slug}`} className="flex items-center justify-center space-x-2">
+                <span>Apply</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          )
+        ) : (
+          <Button asChild className="w-full" variant={variant === "enrolled" ? "default" : "outline"}>
+            <Link href={`/challenges/${challenge.slug}`} className="flex items-center justify-center space-x-2">
+              <span>
+                {variant === "completed" ? "View Results" : 
+                 variant === "enrolled" ? "Continue" : "Start Challenge"}
+              </span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
