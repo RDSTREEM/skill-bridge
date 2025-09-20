@@ -3,10 +3,10 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/Card";
+} from "@/components/ui/card";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 import { Trophy, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -28,7 +28,11 @@ interface ChallengeCardProps {
   showLoginNote?: boolean; // true for homepage, false for challenges section
 }
 
-export function ChallengeCard({ challenge, variant = "default", showLoginNote = false }: ChallengeCardProps) {
+export function ChallengeCard({
+  challenge,
+  variant = "default",
+  showLoginNote = false,
+}: ChallengeCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case "Beginner":
@@ -98,29 +102,46 @@ export function ChallengeCard({ challenge, variant = "default", showLoginNote = 
           showLoginNote ? (
             <>
               <Button asChild className="w-full" variant="outline">
-                <Link href="/login" className="flex items-center justify-center space-x-2">
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center space-x-2"
+                >
                   <span>Login and Apply</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
               <p className="text-xs text-muted-foreground text-center mt-1">
-                After logging in, go to the <b>Challenges</b> section and search for this challenge to apply.
+                After logging in, go to the <b>Challenges</b> section and search
+                for this challenge to apply.
               </p>
             </>
           ) : (
             <Button asChild className="w-full" variant="outline">
-              <Link href={`/challenges/${challenge.slug}`} className="flex items-center justify-center space-x-2">
+              <Link
+                href={`/challenges/${challenge.slug}`}
+                className="flex items-center justify-center space-x-2"
+              >
                 <span>Apply</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           )
         ) : (
-          <Button asChild className="w-full" variant={variant === "enrolled" ? "default" : "outline"}>
-            <Link href={`/challenges/${challenge.slug}`} className="flex items-center justify-center space-x-2">
+          <Button
+            asChild
+            className="w-full"
+            variant={variant === "enrolled" ? "default" : "outline"}
+          >
+            <Link
+              href={`/challenges/${challenge.slug}`}
+              className="flex items-center justify-center space-x-2"
+            >
               <span>
-                {variant === "completed" ? "View Results" : 
-                 variant === "enrolled" ? "Continue" : "Start Challenge"}
+                {variant === "completed"
+                  ? "View Results"
+                  : variant === "enrolled"
+                    ? "Continue"
+                    : "Start Challenge"}
               </span>
               <ArrowRight className="h-4 w-4" />
             </Link>

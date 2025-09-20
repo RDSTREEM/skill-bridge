@@ -1,14 +1,23 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "./Button";
-import { Home, BookOpen, User, Award, Settings, Menu, X } from "lucide-react";
+import { Button } from "./button";
+import {
+  Home,
+  BookOpen,
+  User,
+  Award,
+  Settings,
+  Menu,
+  X,
+  PowerOff,
+} from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/challenges", label: "Challenges", icon: BookOpen },
-  { path: "/my-challenges", label: "My Progress", icon: User },
   { path: "/certificates", label: "Certificates", icon: Award },
 ];
 
@@ -16,6 +25,7 @@ export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
+  const { user } = useAuth();
 
   return (
     <>
@@ -56,7 +66,7 @@ export function MobileNav() {
                   onClick={() => setIsOpen(false)}
                   className={`flex items-center space-x-3 rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-secondary ${
                     isActive(item.path)
-                      ? "bg-primary text-primary-foreground"
+                      ? "border-primary text-primary-foreground"
                       : "text-foreground"
                   }`}
                 >
@@ -67,14 +77,25 @@ export function MobileNav() {
             })}
 
             <div className="pt-4 border-t">
-              <Link
-                href="/profile"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center space-x-3 rounded-lg px-3 py-3 text-base font-medium text-foreground transition-colors hover:bg-secondary"
-              >
-                <Settings className="h-5 w-5" />
-                <span>Settings</span>
-              </Link>
+              {user ? (
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-secondary"
+                >
+                  <Settings className="h-5 w-5" />
+                  <span>Dashboard</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center space-x-3 rounded-lg px-3 py-3 text-base font-medium transition-colors hover:bg-secondary"
+                >
+                  <User className="h-5 w-5" />
+                  <span>Log In</span>
+                </Link>
+              )}
             </div>
           </nav>
         </div>
@@ -109,6 +130,7 @@ export function MobileNav() {
 export function DesktopNav() {
   const pathname = usePathname();
   const isActive = (path: string) => pathname === path;
+  const { user } = useAuth();
 
   return (
     <header className="hidden md:block sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
@@ -146,10 +168,17 @@ export function DesktopNav() {
             })}
 
             <Button variant="outline" size="sm" asChild>
-              <Link href="/profile">
-                <Settings className="h-4 w-4 mr-2" />
-                Profile
-              </Link>
+              {user ? (
+                <Link href="/dashboard">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Dashboard
+                </Link>
+              ) : (
+                <Link href="/login">
+                  <User className="h-4 w-4 mr-2" />
+                  Log In
+                </Link>
+              )}
             </Button>
           </nav>
         </div>

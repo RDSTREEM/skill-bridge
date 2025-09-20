@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader } from "@/components/ui/Card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChallengeCard } from "@/components/challenge-card";
 import {
@@ -227,7 +227,11 @@ const Index = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredChallenges.map((challenge) => (
-                <ChallengeCard key={challenge.id} challenge={challenge} showLoginNote={true} />
+                <ChallengeCard
+                  key={challenge.id}
+                  challenge={challenge}
+                  showLoginNote={true}
+                />
               ))}
             </div>
 

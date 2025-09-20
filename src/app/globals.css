@@ -5,6 +5,96 @@
 
 /* Root theme variables */
 :root {
+  --background: 0 0% 100%;
+  --foreground: 222 84% 5%;
+
+  /* Brand Primary - Educational Blue */
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --primary-hover: 217 91% 55%;
+  --primary-light: 217 91% 90%;
+
+  /* Success - Ethiopian Green */
+  --success: 142 69% 58%;
+  --success-foreground: 0 0% 100%;
+  --success-light: 142 69% 95%;
+
+  /* Warning - Golden Yellow */
+  --warning: 45 93% 58%;
+  --warning-foreground: 222 84% 5%;
+  --warning-light: 45 93% 95%;
+
+  /* Ethiopian Flag Accent */
+  --accent-red: 0 84% 60%;
+  --accent-yellow: 45 93% 58%;
+  --accent-green: 142 69% 58%;
+
+  /* UI Colors */
+  --card: 0 0% 100%;
+  --card-foreground: 222 84% 5%;
+  --card-hover: 217 91% 98%;
+
+  --secondary: 217 32% 96%;
+  --secondary-foreground: 222 84% 15%;
+  --secondary-hover: 217 32% 92%;
+
+  --muted: 217 32% 96%;
+  --muted-foreground: 217 13% 50%;
+
+  --border: 217 32% 89%;
+  --input: 217 32% 89%;
+  --ring: 217 91% 60%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* Certificate Colors */
+  --certificate-bg: 217 91% 98%;
+  --certificate-border: 217 91% 60%;
+  --certificate-seal: 45 93% 58%;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(
+    135deg,
+    hsl(217 91% 60%),
+    hsl(217 91% 70%)
+  );
+  --gradient-success: linear-gradient(
+    135deg,
+    hsl(142 69% 58%),
+    hsl(142 69% 68%)
+  );
+  --gradient-hero: linear-gradient(
+    135deg,
+    hsl(217 91% 60%) 0%,
+    hsl(142 69% 58%) 100%
+  );
+  --gradient-certificate: linear-gradient(
+    135deg,
+    hsl(217 91% 98%) 0%,
+    hsl(45 93% 98%) 100%
+  );
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 hsl(217 91% 60% / 0.05);
+  --shadow-md:
+    0 4px 6px -1px hsl(217 91% 60% / 0.1), 0 2px 4px -2px hsl(217 91% 60% / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px hsl(217 91% 60% / 0.1),
+    0 4px 6px -4px hsl(217 91% 60% / 0.1);
+  --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.3);
+
+  /* Typography */
+  --radius: 0.5rem;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo,
+    monospace;
+
+  /* Animations */
+  --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /*   
+
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -13,7 +103,7 @@
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
 
-  --primary: oklch(0.205 0 0);
+  --primary: 217 91% 60%;
   --primary-light: oklch(0.4 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --primary-hover: oklch(0.15 0 0);
@@ -32,7 +122,7 @@
     var(--primary),
     var(--primary-light)
   );
-  --gradient-hero: linear-gradient(135deg, var(--primary), var(--secondary));
+  --gradient-hero: linear-gradient(135deg, var(--primary), var(--secondary)); */
 }
 
 /* Dark theme overrides */
@@ -216,4 +306,4 @@
   border-radius: var(--radius);
   border: 1px solid var(--border);
   padding: 2em;
-  }
+}
