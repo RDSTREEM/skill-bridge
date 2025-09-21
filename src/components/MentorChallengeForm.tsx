@@ -59,8 +59,12 @@ export default function MentorChallengeForm({
       setAssociation("");
       setDifficulty("beginner");
       if (onCreated) onCreated();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (typeof err === "object" && err !== null && "message" in err) {
+        setError((err as { message: string }).message);
+      } else {
+        setError("Unknown error");
+      }
     } finally {
       setLoading(false);
     }
@@ -91,7 +95,11 @@ export default function MentorChallengeForm({
         <select
           className="w-full border rounded px-3 py-2"
           value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value as any)}
+          onChange={(e) =>
+            setDifficulty(
+              e.target.value as "beginner" | "intermediate" | "experienced",
+            )
+          }
           required
         >
           <option value="beginner">Beginner</option>

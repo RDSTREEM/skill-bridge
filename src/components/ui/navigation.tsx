@@ -2,16 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./button";
-import {
-  Home,
-  BookOpen,
-  User,
-  Award,
-  Settings,
-  Menu,
-  X,
-  PowerOff,
-} from "lucide-react";
+import { Home, BookOpen, User, Award, Settings, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 

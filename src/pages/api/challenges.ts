@@ -49,6 +49,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       submissionDeadline: submissionDeadline || null,
       telegram: telegram || '',
       faq: faq || [],
+      association: req.body.association || '',
+      difficulty: req.body.difficulty || '',
     };
     const docRef = await db.collection('challenges').add({
       ...challenge,
@@ -56,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       applicants: [],
     });
     return res.status(201).json({ id: docRef.id });
-  } catch (error: any) {
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    return res.status(500).json({ error: typeof error === 'object' && error !== null && 'message' in error ? (error as { message: string }).message : String(error) });
   }
 }

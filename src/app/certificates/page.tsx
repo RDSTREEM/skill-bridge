@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { UserCircle } from "lucide-react";
+import Image from "next/image";
 import jsPDF from "jspdf";
 import { useAuth } from "@/lib/auth-context";
 import { db } from "@/lib/firebase";
@@ -9,7 +10,9 @@ import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 
 export default function MyCertificatesPage() {
   const { user, loading } = useAuth();
-  const [certs, setCerts] = useState<any[]>([]);
+  const [certs, setCerts] = useState<
+    Array<{ id: string; [key: string]: unknown }>
+  >([]);
   const [profile, setProfile] = useState<{
     displayName: string;
     email: string;
@@ -38,7 +41,10 @@ export default function MyCertificatesPage() {
   }, [user]);
 
   const [openModal, setOpenModal] = useState(false);
-  const [activeCert, setActiveCert] = useState<any>(null);
+  const [activeCert, setActiveCert] = useState<{
+    id: string;
+    [key: string]: unknown;
+  } | null>(null);
 
   const handleDownload = () => {
     if (!activeCert || !profile) return;
@@ -54,23 +60,33 @@ export default function MyCertificatesPage() {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(36);
     doc.setTextColor(255, 255, 255);
-    doc.text(activeCert.challengeTitle || "Certificate", 400, 100, {
-      align: "center",
-    });
+    doc.text(
+      typeof activeCert?.challengeTitle === "string"
+        ? activeCert.challengeTitle
+        : "Certificate",
+      400,
+      100,
+      { align: "center" },
+    );
     // User Name
     doc.setFontSize(24);
-    doc.text(profile.displayName, 400, 200, { align: "center" });
+    doc.text(profile?.displayName || "", 400, 200, { align: "center" });
     // Description
     doc.setFontSize(18);
     doc.setTextColor(200, 200, 200);
-    doc.text(activeCert.description || "", 400, 280, {
-      align: "center",
-      maxWidth: 700,
-    });
+    doc.text(
+      typeof activeCert?.description === "string" ? activeCert.description : "",
+      400,
+      280,
+      { align: "center", maxWidth: 700 },
+    );
     // Issued Date
-    const date = activeCert.createdAt
-      ? new Date(activeCert.createdAt).toLocaleDateString()
-      : new Date().toLocaleDateString();
+    const date =
+      activeCert?.createdAt &&
+      (typeof activeCert.createdAt === "string" ||
+        typeof activeCert.createdAt === "number")
+        ? new Date(activeCert.createdAt).toLocaleDateString()
+        : new Date().toLocaleDateString();
     doc.setFontSize(16);
     doc.text(`Issued on: ${date}`, 400, 360, { align: "center" });
     doc.save(`${activeCert.challengeTitle || "certificate"}.pdf`);
@@ -96,10 +112,13 @@ export default function MyCertificatesPage() {
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-lg">
             {profile.photoURL ? (
-              <img
+              <Image
                 src={profile.photoURL}
                 alt="User avatar"
+                width={96}
+                height={96}
                 className="w-24 h-24 rounded-full object-cover"
+                unoptimized
               />
             ) : (
               <UserCircle className="w-16 h-16 text-white/80" />
@@ -130,16 +149,23 @@ export default function MyCertificatesPage() {
                 }}
               >
                 <h3 className="font-semibold text-xl text-white">
-                  {cert.challengeTitle || "Certificate"}
+                  {typeof cert.challengeTitle === "string"
+                    ? cert.challengeTitle
+                    : "Certificate"}
                 </h3>
                 <p className="text-sm text-gray-300 mt-1">
                   Issued on:{" "}
                   {cert.createdAt
-                    ? new Date(cert.createdAt).toLocaleDateString()
+                    ? new Date(
+                        typeof cert.createdAt === "string" ||
+                        typeof cert.createdAt === "number"
+                          ? cert.createdAt
+                          : Date.now(),
+                      ).toLocaleDateString()
                     : ""}
                 </p>
                 <p className="text-sm text-gray-400">
-                  {cert.description || ""}
+                  {typeof cert.description === "string" ? cert.description : ""}
                 </p>
                 <span
                   className={`text-xs font-medium px-3 py-1 rounded-full ${
@@ -148,7 +174,7 @@ export default function MyCertificatesPage() {
                       : "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30"
                   }`}
                 >
-                  {cert.status || "Completed"}
+                  {typeof cert.status === "string" ? cert.status : "Completed"}
                 </span>
               </div>
             ))}
@@ -168,10 +194,18 @@ export default function MyCertificatesPage() {
               </p>
               <p className="text-gray-300 mt-2">has successfully completed</p>
               <p className="text-xl font-medium text-white">
-                {activeCert.challengeTitle}
+                {typeof activeCert?.challengeTitle === "string"
+                  ? activeCert.challengeTitle
+                  : ""}
               </p>
               <p className="text-gray-400 mt-4">
-                Issued on: {new Date(activeCert.createdAt).toLocaleDateString()}
+                Issued on:{" "}
+                {new Date(
+                  typeof activeCert?.createdAt === "string" ||
+                  typeof activeCert?.createdAt === "number"
+                    ? activeCert.createdAt
+                    : Date.now(),
+                ).toLocaleDateString()}
               </p>
 
               <div className="flex gap-6 mt-6">

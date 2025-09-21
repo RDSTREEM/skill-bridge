@@ -10,6 +10,6 @@ export async function incrementCertificateStatAdmin(userId: string, stat: 'chall
 }
 
 // Default export handler for Next.js API route compliance
-export default function handler(req: any, res: any) {
-  res.status(200).json({ message: 'adminStat API route is working.' });
+export default function handler(req: unknown, res: unknown) {
+  (res as import('next').NextApiResponse).status(200).json({ message: 'adminStat API route is working.' });
 }

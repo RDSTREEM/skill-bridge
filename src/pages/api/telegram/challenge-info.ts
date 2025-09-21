@@ -31,6 +31,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       return res.status(400).json({ error: 'Missing challenge id or name' });
     }
+    if (!challengeDoc) {
+      return res.status(404).json({ error: 'Challenge not found' });
+    }
     res.status(200).json({
       title: challengeDoc.title,
       submissionDeadline: challengeDoc.submissionDeadline,
@@ -38,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       prizes: challengeDoc.prizes || '',
       faq: challengeDoc.faq || [],
     });
-  } catch (error: any) {
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    return res.status(500).json({ error: typeof error === 'object' && error !== null && 'message' in error ? (error as { message: string }).message : String(error) });
   }
 }

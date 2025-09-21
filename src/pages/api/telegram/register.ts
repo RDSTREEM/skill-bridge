@@ -25,10 +25,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const snap = await usersRef.where('username', '==', username).get();
     if (!snap.empty) {
       const userDoc = snap.docs[0];
-      await userDoc.ref.update({ telegram_id, telegram_first_name: first_name, telegram_last_name: last_name });
+  await userDoc.ref.update({ telegram_id, telegram_first_name: first_name, telegram_last_name: last_name });
     }
     return res.status(200).json({ success: true });
-  } catch (error: any) {
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    return res.status(500).json({ error: typeof error === 'object' && error !== null && 'message' in error ? (error as { message: string }).message : String(error) });
   }
 }

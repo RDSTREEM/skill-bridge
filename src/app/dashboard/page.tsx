@@ -1,4 +1,5 @@
-"use client";
+import Image from "next/image";
+("use client");
 import { useAuth } from "@/lib/auth-context";
 import { db } from "@/lib/firebase";
 import {
@@ -25,10 +26,9 @@ interface Certificate {
   userId: string;
   challengeId: string;
   url: string;
-  createdAt: any;
+  createdAt: string | number;
 }
 
-import { Navbar } from "@/components/Navbar";
 import { Badge } from "@/components/ui/badge";
 import { Award, User, Users, FileText } from "lucide-react";
 
@@ -51,7 +51,6 @@ export default function Dashboard() {
 
   return (
     <>
-      {/* <Navbar /> */}
       <div className="max-w-5xl mx-auto py-8 px-4 space-y-10">
         <section className="flex items-center gap-4 bg-gradient-to-r from-primary/10 to-accent-yellow/10 rounded-2xl p-6 shadow-lg">
           <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary/20">
@@ -331,11 +330,12 @@ import { useEffect, useState } from "react";
 import { getMentorChallenges } from "@/services/challengeService";
 import type { Challenge } from "@/types/challenge";
 
-function MentorDashboard({ user }: { user: any }) {
+function MentorDashboard({ user }: { user: unknown }) {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   useEffect(() => {
-    if (!user) return;
-    getMentorChallenges(user.uid).then(setChallenges);
+    if (!user || typeof user !== "object" || user === null || !("uid" in user))
+      return;
+    getMentorChallenges((user as { uid: string }).uid).then(setChallenges);
   }, [user]);
 
   const handleDecision = async (
@@ -349,7 +349,9 @@ function MentorDashboard({ user }: { user: any }) {
       body: JSON.stringify({ studentId, decision }),
     });
     // Refresh challenges
-    getMentorChallenges(user.uid).then(setChallenges);
+    if (user && typeof user === "object" && user !== null && "uid" in user) {
+      getMentorChallenges((user as { uid: string }).uid).then(setChallenges);
+    }
   };
 
   const handleDelete = async (challengeId: string) => {
@@ -360,7 +362,9 @@ function MentorDashboard({ user }: { user: any }) {
     )
       return;
     await fetch(`/api/challenges/${challengeId}/delete`, { method: "DELETE" });
-    getMentorChallenges(user.uid).then(setChallenges);
+    if (user && typeof user === "object" && user !== null && "uid" in user) {
+      getMentorChallenges((user as { uid: string }).uid).then(setChallenges);
+    }
   };
 
   return (
@@ -370,7 +374,18 @@ function MentorDashboard({ user }: { user: any }) {
       </h2>
       <div className="mb-8">
         <MentorChallengeForm
-          onCreated={() => getMentorChallenges(user.uid).then(setChallenges)}
+          onCreated={() => {
+            if (
+              user &&
+              typeof user === "object" &&
+              user !== null &&
+              "uid" in user
+            ) {
+              getMentorChallenges((user as { uid: string }).uid).then(
+                setChallenges,
+              );
+            }
+          }}
         />
       </div>
       <div className="mt-8">
@@ -384,10 +399,13 @@ function MentorDashboard({ user }: { user: any }) {
               key={c.id}
               className="rounded-2xl border bg-white shadow-md p-5 hover:shadow-lg transition-all flex flex-col gap-2"
             >
-              <img
-                src={c.imageUrl}
+              <Image
+                src={c.imageUrl || "/file.svg"}
                 alt={c.title}
+                width={400}
+                height={160}
                 className="w-full h-40 object-cover rounded-xl mb-2"
+                unoptimized
               />
               <h4 className="font-bold text-lg mb-1">{c.title}</h4>
               <p className="text-gray-700 mb-2 line-clamp-3">{c.description}</p>

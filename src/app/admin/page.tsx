@@ -35,7 +35,7 @@ export default function AdminPage() {
     return onSnapshot(q, (snap) =>
       setSubs(
         snap.docs.map((d) => {
-          const { id, ...data } = d.data() as Submission;
+          const { id: _id, ...data } = d.data() as Submission;
           return { id: d.id, ...data };
         }),
       ),

@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import Link from "next/link";
 import { ChallengeCard } from "@/components/challenge-card";
 
 interface Challenge {
@@ -15,8 +14,6 @@ interface Challenge {
   submissionDeadline?: number;
 }
 
-import { Navbar } from "@/components/Navbar";
-
 export default function ChallengesPage() {
   const [list, setList] = useState<Challenge[]>([]);
   const [search, setSearch] = useState("");
@@ -27,7 +24,12 @@ export default function ChallengesPage() {
   useEffect(() => {
     const q = query(collection(db, "challenges"), orderBy("createdAt", "desc"));
     return onSnapshot(q, (snap) =>
-      setList(snap.docs.map((d) => ({ id: d.id, ...(d.data() as any) }))),
+      setList(
+        snap.docs.map((d) => {
+          const data = d.data() as Challenge;
+          return { ...data, id: d.id };
+        }),
+      ),
     );
   }, []);
 
