@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     // Send email
     let customText = undefined;
-    if (decision === 'accepted') {
+    if (challenge && decision === 'accepted') {
       if (challenge.acceptEmail) {
         customText = challenge.acceptEmail;
       } else {
@@ -61,17 +61,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (challenge.telegram) {
         customText += `\n\nJoin the challenge group here: ${challenge.telegram}`;
       }
-    } else if (decision === 'rejected' && challenge.rejectEmail) {
+    } else if (challenge && decision === 'rejected' && challenge.rejectEmail) {
       customText = challenge.rejectEmail;
     }
     await sendDecisionEmail({
-      to: user.email,
-      challengeTitle: challenge.title,
+      to: user?.email ?? '',
+      challengeTitle: challenge?.title ?? '',
       decision,
       customText,
     });
     return res.status(200).json({ success: true });
-  } catch (error: any) {
-    return res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    let errorMessage = 'Unknown error';
+    if (error && typeof error === 'object' && 'message' in error && typeof (error as { message?: unknown }).message === 'string') {
+      errorMessage = (error as { message: string }).message;
+    }
+    return res.status(500).json({ error: errorMessage });
   }
 }

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest, context: { params: Promise<{ id: st
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
     let errorMessage = 'Submission failed';
-    if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
+    if (err && typeof err === 'object' && 'message' in err && typeof (err as { message?: unknown }).message === 'string') {
       errorMessage = (err as { message: string }).message;
     }
     return NextResponse.json({ error: errorMessage }, { status: 500 });

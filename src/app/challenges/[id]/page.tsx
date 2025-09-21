@@ -5,13 +5,15 @@ import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/Navbar";
+// import { Navbar } from "@/components/Navbar";
 
 export default function ChallengeDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params?.id ?? "";
   const { user } = useAuth();
-  const [challenge, setChallenge] = useState<any>(null);
+  const [challenge, setChallenge] = useState<Record<string, unknown> | null>(
+    null,
+  );
   const [essay, setEssay] = useState("");
   const [applied, setApplied] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -52,8 +54,17 @@ export default function ChallengeDetailPage() {
         [`applicantsEssay.${user.uid}`]: essay,
       });
       setApplied(true);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (
+        err &&
+        typeof err === "object" &&
+        "message" in err &&
+        typeof (err as { message?: unknown }).message === "string"
+      ) {
+        setError((err as { message: string }).message);
+      } else {
+        setError("An error occurred");
+      }
     }
   };
 
@@ -64,13 +75,16 @@ export default function ChallengeDetailPage() {
     <>
       {/* <Navbar /> */}
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow mt-8">
-        <h1 className="text-3xl font-bold mb-2">{challenge.title}</h1>
+        <h1 className="text-3xl font-bold mb-2">{String(challenge.title)}</h1>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* If you want to use Next.js Image, uncomment below and import Image from 'next/image' */}
+        {/* <Image src={String(challenge.imageUrl)} alt={String(challenge.title)} width={800} height={224} className="w-full h-56 object-cover rounded mb-4" /> */}
         <img
-          src={challenge.imageUrl}
-          alt={challenge.title}
+          src={String(challenge.imageUrl)}
+          alt={String(challenge.title)}
           className="w-full h-56 object-cover rounded mb-4"
         />
-        <p className="mb-4 text-gray-700">{challenge.description}</p>
+        <p className="mb-4 text-gray-700">{String(challenge.description)}</p>
         {applied ? (
           <div className="p-4 bg-green-50 rounded text-green-700 font-semibold">
             You have applied to this challenge.

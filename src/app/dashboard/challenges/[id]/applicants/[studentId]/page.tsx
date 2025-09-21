@@ -15,15 +15,15 @@ export default function ApplicantEssayPage({
   const studentId = params.studentId;
   const [status, setStatus] = useState<string>("pending");
   const [loading, startTransition] = useTransition();
-  const [student, setStudent] = useState<any>(null);
-  const [mentor, setMentor] = useState<any>(null);
+  const [student, setStudent] = useState<Record<string, unknown> | null>(null);
+  const [mentor, setMentor] = useState<Record<string, unknown> | null>(null);
   const [essay, setEssay] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [completionRequested, setCompletionRequested] =
     useState<boolean>(false);
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const [canSubmitEssay, setCanSubmitEssay] = useState<boolean>(false);
-  const [challenge, setChallenge] = useState<any>(null);
+  // Removed unused variable 'challenge'
   const router = useRouter();
 
   // Fetch data on mount
@@ -31,7 +31,7 @@ export default function ApplicantEssayPage({
     (async () => {
       const challengeSnap = await getDoc(doc(db, "challenges", challengeId));
       const challenge = challengeSnap.exists() ? challengeSnap.data() : null;
-      setChallenge(challenge);
+      // setChallenge removed (challenge state no longer exists)
       setEssay(challenge?.applicantsEssay?.[studentId] || "");
       setStatus(challenge?.applicantsStatus?.[studentId] || "pending");
       setCompletionRequested(!!challenge?.completionRequested?.[studentId]);
@@ -98,8 +98,17 @@ export default function ApplicantEssayPage({
         } else {
           setCompletionRequested(true);
         }
-      } catch (e: any) {
-        setError(e.message || "Failed to request completion");
+      } catch (e: unknown) {
+        if (
+          e &&
+          typeof e === "object" &&
+          "message" in e &&
+          typeof (e as { message?: unknown }).message === "string"
+        ) {
+          setError((e as { message: string }).message);
+        } else {
+          setError("Failed to request completion");
+        }
       }
     });
   };
@@ -119,8 +128,17 @@ export default function ApplicantEssayPage({
         } else {
           setStatus(decision);
         }
-      } catch (e: any) {
-        setError(e.message || "Failed to update status");
+      } catch (e: unknown) {
+        if (
+          e &&
+          typeof e === "object" &&
+          "message" in e &&
+          typeof (e as { message?: unknown }).message === "string"
+        ) {
+          setError((e as { message: string }).message);
+        } else {
+          setError("Failed to update status");
+        }
       }
     });
   };
@@ -143,7 +161,7 @@ export default function ApplicantEssayPage({
         </div>
         {mentor && (
           <div className="mt-2 text-xs text-gray-600">
-            By <span className="font-semibold">{mentor.username}</span>
+            By <span className="font-semibold">{String(mentor.username)}</span>
           </div>
         )}
         {error && <div className="text-red-600 text-xs mt-2">{error}</div>}

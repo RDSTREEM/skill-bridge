@@ -338,21 +338,7 @@ function MentorDashboard({ user }: { user: unknown }) {
     getMentorChallenges((user as { uid: string }).uid).then(setChallenges);
   }, [user]);
 
-  const handleDecision = async (
-    challengeId: string,
-    studentId: string,
-    decision: "accepted" | "rejected",
-  ) => {
-    await fetch(`/api/challenges/${challengeId}/decision`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ studentId, decision }),
-    });
-    // Refresh challenges
-    if (user && typeof user === "object" && user !== null && "uid" in user) {
-      getMentorChallenges((user as { uid: string }).uid).then(setChallenges);
-    }
-  };
+  // Removed unused handleDecision function
 
   const handleDelete = async (challengeId: string) => {
     if (

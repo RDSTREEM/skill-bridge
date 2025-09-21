@@ -9,7 +9,7 @@ interface Submission {
   evidence: string;
   links: string[];
   status: string;
-  createdAt: any;
+  createdAt: string | number | Date | null;
 }
 
 export default async function SubmissionDetailPage({
@@ -27,8 +27,9 @@ export default async function SubmissionDetailPage({
       </div>
     );
   }
-  const { id: _id, ...data } = snap.data() as Submission;
-  const sub = { id: snap.id, ...data };
+  const data = snap.data() as Submission;
+  const { id: _id, ...rest } = data;
+  const sub = { id: snap.id, ...rest };
   return (
     <div className="max-w-xl mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-6">

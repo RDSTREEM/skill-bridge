@@ -14,7 +14,8 @@ export default function ChallengeSubmitPage({
   const searchParams = useSearchParams();
   const { user } = useAuth();
   // Prefer logged-in user ID, fallback to query param
-  const studentId = user?.uid || searchParams.get("studentId");
+  const studentId =
+    user?.uid || (searchParams ? searchParams.get("studentId") : null);
   const [evidence, setEvidence] = useState("");
   const [links, setLinks] = useState([""]);
   const [loading, setLoading] = useState(false);
@@ -47,8 +48,17 @@ export default function ChallengeSubmitPage({
       } else {
         router.push(`/dashboard/challenges/${challengeId}/submit/success`);
       }
-    } catch (e: any) {
-      setError(e.message || "Submission failed");
+    } catch (e: unknown) {
+      if (
+        e &&
+        typeof e === "object" &&
+        "message" in e &&
+        typeof (e as { message?: unknown }).message === "string"
+      ) {
+        setError((e as { message: string }).message);
+      } else {
+        setError("Submission failed");
+      }
     } finally {
       setLoading(false);
     }

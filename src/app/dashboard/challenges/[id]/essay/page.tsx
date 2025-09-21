@@ -34,8 +34,17 @@ export default function EssaySubmissionPage({
           `/dashboard/challenges/${challengeId}/applicants/${studentId}`,
         );
       }
-    } catch (e: any) {
-      setError(e.message || "Submission failed");
+    } catch (e: unknown) {
+      if (
+        e &&
+        typeof e === "object" &&
+        "message" in e &&
+        typeof (e as { message?: unknown }).message === "string"
+      ) {
+        setError((e as { message: string }).message);
+      } else {
+        setError("Submission failed");
+      }
     } finally {
       setLoading(false);
     }

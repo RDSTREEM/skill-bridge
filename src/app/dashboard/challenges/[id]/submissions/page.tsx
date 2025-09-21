@@ -1,6 +1,6 @@
-import { db } from '@/lib/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import Link from 'next/link';
+import { db } from "@/lib/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import Link from "next/link";
 
 interface Submission {
   id: string;
@@ -8,11 +8,25 @@ interface Submission {
   username?: string;
 }
 
-export default async function SubmissionsPage({ params }: { params: { id: string } }) {
+export default async function SubmissionsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   // Fetch all submissions for this challenge
-  const q = query(collection(db, 'submissions'), where('challengeId', '==', params.id));
+  const q = query(
+    collection(db, "submissions"),
+    where("challengeId", "==", params.id),
+  );
   const snap = await getDocs(q);
-  const submissions: Submission[] = snap.docs.map(d => ({ id: d.id, ...(d.data() as any) }));
+  const submissions: Submission[] = snap.docs.map((d) => {
+    const data = d.data() as Record<string, unknown>;
+    return {
+      id: d.id,
+      userId: typeof data.userId === "string" ? data.userId : "",
+      username: typeof data.username === "string" ? data.username : undefined,
+    };
+  });
 
   return (
     <div className="max-w-3xl mx-auto mt-10">
@@ -21,9 +35,14 @@ export default async function SubmissionsPage({ params }: { params: { id: string
         <p className="text-gray-500">No submissions yet.</p>
       ) : (
         <ul className="space-y-4">
-          {submissions.map(sub => (
-            <li key={sub.id} className="border rounded-lg p-4 bg-white shadow flex items-center justify-between">
-              <span className="font-semibold">{sub.username ? sub.username : 'Unknown'}</span>
+          {submissions.map((sub) => (
+            <li
+              key={sub.id}
+              className="border rounded-lg p-4 bg-white shadow flex items-center justify-between"
+            >
+              <span className="font-semibold">
+                {sub.username ? sub.username : "Unknown"}
+              </span>
               <Link
                 href={`/dashboard/challenges/${params.id}/submissions/${sub.id}`}
                 className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
@@ -34,7 +53,12 @@ export default async function SubmissionsPage({ params }: { params: { id: string
           ))}
         </ul>
       )}
-      <Link href="/dashboard" className="inline-block mt-8 px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow hover:bg-primary/90 transition">Back to Dashboard</Link>
+      <Link
+        href="/dashboard"
+        className="inline-block mt-8 px-6 py-2 bg-primary text-white rounded-lg font-semibold shadow hover:bg-primary/90 transition"
+      >
+        Back to Dashboard
+      </Link>
     </div>
   );
 }

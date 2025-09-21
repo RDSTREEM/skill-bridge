@@ -51,7 +51,7 @@ export default function CertificatePage({
           e &&
           typeof e === "object" &&
           "message" in e &&
-          typeof (e as any).message === "string"
+          typeof (e as { message?: unknown }).message === "string"
         ) {
           errorMessage = (e as { message: string }).message;
         }
