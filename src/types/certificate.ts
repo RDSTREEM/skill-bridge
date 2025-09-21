@@ -1,7 +1,7 @@
 export interface Certificate {
   id: string;
   userId: string;
-  type: 'main' | 'challenge';
+  type: "main" | "challenge";
   createdAt: number;
   username: string;
   email: string;
