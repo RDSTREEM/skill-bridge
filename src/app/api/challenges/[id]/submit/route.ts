@@ -4,9 +4,9 @@ import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { getUserProfile } from '@/services/userService';
 
 // POST /api/challenges/[id]/submit
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const challengeId = params.id;
+    const { id: challengeId } = await context.params;
     const { studentId, evidence, links } = await req.json();
     if (!studentId || !evidence) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -30,7 +30,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
     // Optionally: Notify mentor here (e.g., via email or notification system)
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Submission failed' }, { status: 500 });
+  } catch (err: unknown) {
+    let errorMessage = 'Submission failed';
+    if (err && typeof err === 'object' && 'message' in err && typeof (err as any).message === 'string') {
+      errorMessage = (err as { message: string }).message;
+    }
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

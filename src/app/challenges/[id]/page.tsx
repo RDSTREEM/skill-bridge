@@ -4,11 +4,12 @@ import { useParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { useAuth } from "@/lib/auth-context";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 
 export default function ChallengeDetailPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>();
+  const id = params?.id ?? "";
   const { user } = useAuth();
   const [challenge, setChallenge] = useState<any>(null);
   const [essay, setEssay] = useState("");

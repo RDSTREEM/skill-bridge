@@ -1,26 +1,31 @@
 "use client";
-import { useState } from 'react';
-import { useAuth } from '@/lib/auth-context';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/Button';
+import { useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
-export default function ChallengeSubmitPage({ params }: { params: { id: string } }) {
+export default function ChallengeSubmitPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const challengeId = params.id;
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
   // Prefer logged-in user ID, fallback to query param
-  const studentId = user?.uid || searchParams.get('studentId');
-  const [evidence, setEvidence] = useState('');
-  const [links, setLinks] = useState(['']);
+  const studentId = user?.uid || searchParams.get("studentId");
+  const [evidence, setEvidence] = useState("");
+  const [links, setLinks] = useState([""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleLinkChange = (i: number, value: string) => {
-    setLinks(links => links.map((l, idx) => (idx === i ? value : l)));
+    setLinks((links) => links.map((l, idx) => (idx === i ? value : l)));
   };
-  const addLink = () => setLinks([...links, '']);
-  const removeLink = (i: number) => setLinks(links.filter((_, idx) => idx !== i));
+  const addLink = () => setLinks([...links, ""]);
+  const removeLink = (i: number) =>
+    setLinks(links.filter((_, idx) => idx !== i));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,18 +33,22 @@ export default function ChallengeSubmitPage({ params }: { params: { id: string }
     setError(null);
     try {
       const res = await fetch(`/api/challenges/${challengeId}/submit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ studentId, evidence, links: links.filter(l => l.trim()) }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentId,
+          evidence,
+          links: links.filter((l) => l.trim()),
+        }),
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Submission failed');
+        setError(data.error || "Submission failed");
       } else {
         router.push(`/dashboard/challenges/${challengeId}/submit/success`);
       }
     } catch (e: any) {
-      setError(e.message || 'Submission failed');
+      setError(e.message || "Submission failed");
     } finally {
       setLoading(false);
     }
@@ -54,7 +63,7 @@ export default function ChallengeSubmitPage({ params }: { params: { id: string }
           <textarea
             className="w-full border rounded px-3 py-2"
             value={evidence}
-            onChange={e => setEvidence(e.target.value)}
+            onChange={(e) => setEvidence(e.target.value)}
             required
             rows={5}
           />
@@ -64,7 +73,9 @@ export default function ChallengeSubmitPage({ params }: { params: { id: string }
             Google Drive Links (required for files)
           </label>
           <p className="text-sm text-gray-600 mb-2">
-            Please upload all necessary files (code, documents, etc.) to Google Drive and paste the shareable link(s) below. Make sure the links are accessible.
+            Please upload all necessary files (code, documents, etc.) to Google
+            Drive and paste the shareable link(s) below. Make sure the links are
+            accessible.
           </p>
           {links.map((link, i) => (
             <div key={i} className="flex gap-2 mb-2">
@@ -72,18 +83,22 @@ export default function ChallengeSubmitPage({ params }: { params: { id: string }
                 className="flex-1 border rounded px-3 py-2"
                 placeholder="Paste Google Drive link here"
                 value={link}
-                onChange={e => handleLinkChange(i, e.target.value)}
+                onChange={(e) => handleLinkChange(i, e.target.value)}
               />
               {links.length > 1 && (
-                <Button type="button" onClick={() => removeLink(i)}>-</Button>
+                <Button type="button" onClick={() => removeLink(i)}>
+                  -
+                </Button>
               )}
             </div>
           ))}
-          <Button type="button" onClick={addLink}>Add Link</Button>
+          <Button type="button" onClick={addLink}>
+            Add Link
+          </Button>
         </div>
         {error && <div className="text-red-600 text-sm">{error}</div>}
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? "Submitting..." : "Submit"}
         </Button>
       </form>
     </div>

@@ -1,14 +1,18 @@
 "use client";
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
-export default function EssaySubmissionPage({ params }: { params: { id: string } }) {
+export default function EssaySubmissionPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const challengeId = params.id;
   const router = useRouter();
   const searchParams = useSearchParams();
-  const studentId = searchParams.get('studentId');
-  const [essay, setEssay] = useState('');
+  const studentId = searchParams ? searchParams.get("studentId") : null;
+  const [essay, setEssay] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,18 +22,20 @@ export default function EssaySubmissionPage({ params }: { params: { id: string }
     setError(null);
     try {
       const res = await fetch(`/api/challenges/${challengeId}/essay`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, essay }),
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Submission failed');
+        setError(data.error || "Submission failed");
       } else {
-        router.push(`/dashboard/challenges/${challengeId}/applicants/${studentId}`);
+        router.push(
+          `/dashboard/challenges/${challengeId}/applicants/${studentId}`,
+        );
       }
     } catch (e: any) {
-      setError(e.message || 'Submission failed');
+      setError(e.message || "Submission failed");
     } finally {
       setLoading(false);
     }
@@ -44,14 +50,14 @@ export default function EssaySubmissionPage({ params }: { params: { id: string }
           <textarea
             className="w-full border rounded px-3 py-2"
             value={essay}
-            onChange={e => setEssay(e.target.value)}
+            onChange={(e) => setEssay(e.target.value)}
             required
             rows={6}
           />
         </div>
         {error && <div className="text-red-600 text-sm">{error}</div>}
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Essay'}
+          {loading ? "Submitting..." : "Submit Essay"}
         </Button>
       </form>
     </div>
