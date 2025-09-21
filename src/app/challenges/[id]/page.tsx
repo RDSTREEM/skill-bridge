@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
@@ -76,12 +77,12 @@ export default function ChallengeDetailPage() {
       {/* <Navbar /> */}
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow mt-8">
         <h1 className="text-3xl font-bold mb-2">{String(challenge.title)}</h1>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         {/* If you want to use Next.js Image, uncomment below and import Image from 'next/image' */}
-        {/* <Image src={String(challenge.imageUrl)} alt={String(challenge.title)} width={800} height={224} className="w-full h-56 object-cover rounded mb-4" /> */}
-        <img
+        <Image
           src={String(challenge.imageUrl)}
           alt={String(challenge.title)}
+          width={800}
+          height={224}
           className="w-full h-56 object-cover rounded mb-4"
         />
         <p className="mb-4 text-gray-700">{String(challenge.description)}</p>

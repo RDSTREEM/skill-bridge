@@ -1,5 +1,5 @@
+"use client";
 import Image from "next/image";
-("use client");
 import { useAuth } from "@/lib/auth-context";
 import { db } from "@/lib/firebase";
 import {
